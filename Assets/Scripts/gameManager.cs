@@ -17,6 +17,8 @@ public class gamemanager : MonoBehaviour
     public Image playerHPbar;
     public GameObject player;
     public PlayerMovement playerScript;
+    public GameObject playerSpawnPos;
+    public GameObject checkpointPopup;
     public bool isPaused;
 
     private float timeScaleOrig;
