@@ -25,11 +25,9 @@ public class buttonFunctions : MonoBehaviour
     #endif
     }
 
-    // for when we do the checkpoints
-
-    //public void playerspawn()
-    //{
-    //    gamemanager.instance.playerScript.spawnPlayer();
-    //    gamemanager.instance.stateUnpause();
-    //}
+    public void playerspawn()
+    {
+        gamemanager.instance.playerScript.spawnPlayer();
+        gamemanager.instance.stateUnpause();
+    }
 }

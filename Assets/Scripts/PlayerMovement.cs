@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-
+    [SerializeField] CharacterController controller;
     [SerializeField] int HP;
     int HPOrig;
 
@@ -138,6 +138,14 @@ public class PlayerMovement : MonoBehaviour
     public void updatePlayerUI()
     {
         gamemanager.instance.playerHPbar.fillAmount = (float)HP / HPOrig;
+    }
+
+    public void spawnPlayer()
+    {
+        controller.transform.position = gamemanager.instance.playerSpawnPos.transform.position;
+        Physics.SyncTransforms();
+        HP = HPOrig;
+        updatePlayerUI();
     }
 
 }
