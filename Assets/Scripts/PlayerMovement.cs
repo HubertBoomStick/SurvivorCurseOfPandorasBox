@@ -2,6 +2,10 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+
+    [SerializeField] int HP;
+    int HPOrig;
+
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float jumpForce = 7f;
@@ -22,6 +26,11 @@ public class PlayerMovement : MonoBehaviour
     private float jumpTimer;
     private float moveInput;
 
+    private void Start()
+    {
+        HPOrig = HP;
+        updatePlayerUI();
+    }
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -113,4 +122,22 @@ public class PlayerMovement : MonoBehaviour
         Gizmos.color = isGrounded ? Color.green : Color.red;
         Gizmos.DrawWireSphere(feetPosition.position, groundCheckRadius);
     }
+
+    public void takeDamage(int amount)
+    {
+        HP -= amount;
+        updatePlayerUI();
+     
+        if (HP <= 0)
+        {
+            //player is dead
+            gamemanager.instance.youLose();
+        }
+    }
+
+    public void updatePlayerUI()
+    {
+        gamemanager.instance.playerHPbar.fillAmount = (float)HP / HPOrig;
+    }
+
 }
