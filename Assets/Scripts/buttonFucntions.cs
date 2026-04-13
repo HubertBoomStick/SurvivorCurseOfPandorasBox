@@ -25,9 +25,9 @@ public class buttonFunctions : MonoBehaviour
     #endif
     }
 
-    public void playerspawn()
-    {
-        gamemanager.instance.playerScript.spawnPlayer();
-        gamemanager.instance.stateUnpause();
-    }
+    //public void playerspawn()
+    //{
+    //    gamemanager.instance.playerScript.spawnPlayer();
+    //    gamemanager.instance.stateUnpause();
+    //}
 }

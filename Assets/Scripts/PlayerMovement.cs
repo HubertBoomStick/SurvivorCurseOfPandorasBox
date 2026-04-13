@@ -140,12 +140,12 @@ public class PlayerMovement : MonoBehaviour
         gamemanager.instance.playerHPbar.fillAmount = (float)HP / HPOrig;
     }
 
-    public void spawnPlayer()
-    {
-        controller.transform.position = gamemanager.instance.playerSpawnPos.transform.position;
-        Physics.SyncTransforms();
-        HP = HPOrig;
-        updatePlayerUI();
-    }
+    //public void spawnPlayer()
+    //{
+    //    controller.transform.position = gamemanager.instance.playerSpawnPos.transform.position;
+    //    Physics.SyncTransforms();
+    //    HP = HPOrig;
+    //    updatePlayerUI();
+    //}
 
 }
