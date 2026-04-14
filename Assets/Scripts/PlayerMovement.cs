@@ -2,6 +2,10 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [SerializeField] CharacterController controller;
+    [SerializeField] int HP;
+    int HPOrig;
+
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float jumpForce = 7f;
@@ -15,13 +19,41 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float jumpCD = 0.1f;
     [SerializeField] private float fallMultiplier = 2f;
 
+    [Header("Sprint")]
+    [SerializeField] private float sprintMultiplier = 1.5f;
+    [SerializeField] private KeyCode sprintKey = KeyCode.LeftShift;
+
+    [Header("Double Jump")]
+    [SerializeField] private int maxJumps = 2;
+    private int jumpsLeft;
+
+    [Header("Wall Jump")]
+    [SerializeField] private Transform wallCheck;
+    [SerializeField] private float wallCheckDistance = 0.5f;
+    [SerializeField] private LayerMask wallLayer;
+    [SerializeField] private Vector2 wallJumpForce = new Vector2(5f, 7f);
+
+    [Header("Wall Slide")]
+    [SerializeField] private float wallSlideSpeed = 2f;
+
     private Rigidbody rb;
     private Animator animator;
 
+    private bool isWallSliding;
     private bool isGrounded;
+    private bool isTouchingWall; 
+    private bool isSprinting;
+
     private float jumpTimer;
     private float moveInput;
 
+   
+
+    private void Start()
+    {
+        HPOrig = HP;
+        updatePlayerUI();
+    }
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -33,11 +65,22 @@ public class PlayerMovement : MonoBehaviour
         moveInput = Input.GetAxisRaw("Horizontal");
 
         CheckGround();
+        CheckWall();
         UpdateAnimations();
 
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        isSprinting = Input.GetKey(sprintKey) && isGrounded;
+
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            Jump();
+            if (isTouchingWall && !isGrounded)
+            {
+                WallJump();
+            }
+            else if (jumpsLeft > 0)
+            {
+                Jump();
+                jumpsLeft--;
+            }
         }
 
         if (moveInput > 0)
@@ -54,6 +97,15 @@ public class PlayerMovement : MonoBehaviour
     {
         Move();
 
+        if (isWallSliding && rb.linearVelocity.y < -wallSlideSpeed)
+        {
+            rb.linearVelocity = new Vector3(
+                rb.linearVelocity.x,
+                -wallSlideSpeed,
+                rb.linearVelocity.z
+            );
+        }
+
         if (rb.linearVelocity.y < 0)
         {
             rb.linearVelocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
@@ -62,8 +114,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void Move()
     {
+        float currentSpeed = isSprinting ? moveSpeed * sprintMultiplier : moveSpeed;
+
         Vector3 velocity = rb.linearVelocity;
-        velocity.x = moveInput * moveSpeed;
+        velocity.x = moveInput * currentSpeed;
         rb.linearVelocity = velocity;
     }
 
@@ -92,6 +146,11 @@ public class PlayerMovement : MonoBehaviour
 
         isGrounded = Physics.CheckSphere(feetPosition.position, groundCheckRadius, groundLayer);
 
+        if (isGrounded)
+        {
+            jumpsLeft = maxJumps;
+        }
+
         if (isGrounded && animator != null)
         {
             animator.SetBool("IsJump", false);
@@ -113,4 +172,51 @@ public class PlayerMovement : MonoBehaviour
         Gizmos.color = isGrounded ? Color.green : Color.red;
         Gizmos.DrawWireSphere(feetPosition.position, groundCheckRadius);
     }
+
+    public void takeDamage(int amount)
+    {
+        HP -= amount;
+        updatePlayerUI();
+     
+        if (HP <= 0)
+        {
+            //player is dead
+            gamemanager.instance.youLose();
+        }
+    }
+
+    public void updatePlayerUI()
+    {
+        gamemanager.instance.playerHPbar.fillAmount = (float)HP / HPOrig;
+    }
+
+    //public void spawnPlayer()
+    //{
+    //    controller.transform.position = gamemanager.instance.playerSpawnPos.transform.position;
+    //    Physics.SyncTransforms();
+    //    HP = HPOrig;
+    //    updatePlayerUI();
+    //}
+
+    private void CheckWall()
+    {
+        isTouchingWall = Physics.Raycast(transform.position, transform.right, wallCheckDistance, wallLayer) ||
+                         Physics.Raycast(transform.position, -transform.right, wallCheckDistance, wallLayer);
+
+        isWallSliding = isTouchingWall && !isGrounded && rb.linearVelocity.y < 0;
+    }
+
+    private void WallJump()
+    {
+        float direction = transform.rotation.y > 0 ? -1 : 1;
+
+        rb.linearVelocity = new Vector3(
+            wallJumpForce.x * direction,
+            wallJumpForce.y,
+            0f
+        );
+
+        jumpsLeft = maxJumps - 1;
+    }
+
 }
