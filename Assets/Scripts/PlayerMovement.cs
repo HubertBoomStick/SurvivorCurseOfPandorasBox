@@ -19,12 +19,31 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float jumpCD = 0.1f;
     [SerializeField] private float fallMultiplier = 2f;
 
+    [Header("Double Jump")]
+    [SerializeField] private int maxJumps = 2;
+    private int jumpsLeft;
+
+    [Header("Wall Jump")]
+    [SerializeField] private Transform wallCheck;
+    [SerializeField] private float wallCheckDistance = 0.5f;
+    [SerializeField] private LayerMask wallLayer;
+    [SerializeField] private Vector2 wallJumpForce = new Vector2(5f, 7f);
+
+    [Header("Wall Slide")]
+    [SerializeField] private float wallSlideSpeed = 2f;
+
+
     private Rigidbody rb;
     private Animator animator;
 
+    private bool isWallSliding;
     private bool isGrounded;
+    private bool isTouchingWall;
+
     private float jumpTimer;
     private float moveInput;
+
+   
 
     private void Start()
     {
@@ -42,11 +61,20 @@ public class PlayerMovement : MonoBehaviour
         moveInput = Input.GetAxisRaw("Horizontal");
 
         CheckGround();
+        CheckWall();
         UpdateAnimations();
 
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            Jump();
+            if (isTouchingWall && !isGrounded)
+            {
+                WallJump();
+            }
+            else if (jumpsLeft > 0)
+            {
+                Jump();
+                jumpsLeft--;
+            }
         }
 
         if (moveInput > 0)
@@ -62,6 +90,15 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         Move();
+
+        if (isWallSliding && rb.linearVelocity.y < -wallSlideSpeed)
+        {
+            rb.linearVelocity = new Vector3(
+                rb.linearVelocity.x,
+                -wallSlideSpeed,
+                rb.linearVelocity.z
+            );
+        }
 
         if (rb.linearVelocity.y < 0)
         {
@@ -100,6 +137,11 @@ public class PlayerMovement : MonoBehaviour
         }
 
         isGrounded = Physics.CheckSphere(feetPosition.position, groundCheckRadius, groundLayer);
+
+        if (isGrounded)
+        {
+            jumpsLeft = maxJumps;
+        }
 
         if (isGrounded && animator != null)
         {
@@ -146,6 +188,27 @@ public class PlayerMovement : MonoBehaviour
         Physics.SyncTransforms();
         HP = HPOrig;
         updatePlayerUI();
+    }
+
+    private void CheckWall()
+    {
+        isTouchingWall = Physics.Raycast(transform.position, transform.right, wallCheckDistance, wallLayer) ||
+                         Physics.Raycast(transform.position, -transform.right, wallCheckDistance, wallLayer);
+
+        isWallSliding = isTouchingWall && !isGrounded && rb.linearVelocity.y < 0;
+    }
+
+    private void WallJump()
+    {
+        float direction = transform.rotation.y > 0 ? -1 : 1;
+
+        rb.linearVelocity = new Vector3(
+            wallJumpForce.x * direction,
+            wallJumpForce.y,
+            0f
+        );
+
+        jumpsLeft = maxJumps - 1;
     }
 
 }
