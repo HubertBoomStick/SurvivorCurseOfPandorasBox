@@ -19,6 +19,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float jumpCD = 0.1f;
     [SerializeField] private float fallMultiplier = 2f;
 
+    [Header("Sprint")]
+    [SerializeField] private float sprintMultiplier = 1.5f;
+    [SerializeField] private KeyCode sprintKey = KeyCode.LeftShift;
+
     [Header("Double Jump")]
     [SerializeField] private int maxJumps = 2;
     private int jumpsLeft;
@@ -32,13 +36,13 @@ public class PlayerMovement : MonoBehaviour
     [Header("Wall Slide")]
     [SerializeField] private float wallSlideSpeed = 2f;
 
-
     private Rigidbody rb;
     private Animator animator;
 
     private bool isWallSliding;
     private bool isGrounded;
-    private bool isTouchingWall;
+    private bool isTouchingWall; 
+    private bool isSprinting;
 
     private float jumpTimer;
     private float moveInput;
@@ -63,6 +67,8 @@ public class PlayerMovement : MonoBehaviour
         CheckGround();
         CheckWall();
         UpdateAnimations();
+
+        isSprinting = Input.GetKey(sprintKey) && isGrounded;
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -108,8 +114,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void Move()
     {
+        float currentSpeed = isSprinting ? moveSpeed * sprintMultiplier : moveSpeed;
+
         Vector3 velocity = rb.linearVelocity;
-        velocity.x = moveInput * moveSpeed;
+        velocity.x = moveInput * currentSpeed;
         rb.linearVelocity = velocity;
     }
 
