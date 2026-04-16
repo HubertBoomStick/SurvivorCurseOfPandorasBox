@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] CharacterController controller;
     [SerializeField] int HP;
     int HPOrig;
 
@@ -23,9 +22,14 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float sprintMultiplier = 1.5f;
     [SerializeField] private KeyCode sprintKey = KeyCode.LeftShift;
 
+    [Header("Crouch")]
+    [SerializeField] private KeyCode crouchKey = KeyCode.LeftControl;
+    [SerializeField] private float crouchSpeedMultiplier = 0.5f;
+    [SerializeField] private Vector3 crouchScale = new Vector3(1, 0.5f, 1);
+
+
     [Header("Double Jump")]
     [SerializeField] private int maxJumps = 2;
-    private int jumpsLeft;
 
     [Header("Wall Jump")]
     [SerializeField] private Transform wallCheck;
@@ -36,28 +40,32 @@ public class PlayerMovement : MonoBehaviour
     [Header("Wall Slide")]
     [SerializeField] private float wallSlideSpeed = 2f;
 
-    [Header("Knockback")]
-    [SerializeField] private float knockbackDuration = 0.2f;
-    private bool isKnockedBack;
-    private float knockbackTimer;
-
     private Rigidbody rb;
     private Animator animator;
 
+    private Vector3 originalScale;
+
+    private int jumpsLeft;
+
     private bool isWallSliding;
     private bool isGrounded;
-    private bool isTouchingWall;
+    private bool isTouchingWall; 
     private bool isSprinting;
+    private bool isCrouching;
 
+    private float originalHeight;
     private float jumpTimer;
     private float moveInput;
+
+   
 
     private void Start()
     {
         HPOrig = HP;
         updatePlayerUI();
-    }
 
+        originalScale = transform.localScale;
+    }
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -66,57 +74,50 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        // count down knockback timer
-        if (isKnockedBack)
-        {
-            knockbackTimer -= Time.deltaTime;
-
-            if (knockbackTimer <= 0f)
-            {
-                isKnockedBack = false;
-            }
-        }
-
-        // only read input when not knocked back
-        if (!isKnockedBack)
-        {
-            moveInput = Input.GetAxisRaw("Horizontal");
-            isSprinting = Input.GetKey(sprintKey) && isGrounded;
-
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                if (isTouchingWall && !isGrounded)
-                {
-                    WallJump();
-                }
-                else if (jumpsLeft > 0)
-                {
-                    Jump();
-                    jumpsLeft--;
-                }
-            }
-
-            if (moveInput > 0)
-            {
-                transform.rotation = Quaternion.Euler(0f, 90f, 0f);
-            }
-            else if (moveInput < 0)
-            {
-                transform.rotation = Quaternion.Euler(0f, -90f, 0f);
-            }
-        }
+        moveInput = Input.GetAxisRaw("Horizontal");
 
         CheckGround();
         CheckWall();
         UpdateAnimations();
+
+        isSprinting = Input.GetKey(sprintKey) && isGrounded;
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (isTouchingWall && !isGrounded)
+            {
+                WallJump();
+            }
+            else if (jumpsLeft > 0)
+            {
+                Jump();
+                jumpsLeft--;
+            }
+        }
+
+        if (moveInput > 0)
+        {
+            transform.rotation = Quaternion.Euler(0f, 90f, 0f);
+        }
+        else if (moveInput < 0)
+        {
+            transform.rotation = Quaternion.Euler(0f, -90f, 0f);
+        }
+
+        if (Input.GetKeyDown(crouchKey))
+        {
+            StartCrouch();
+        }
+
+        if (Input.GetKeyUp(crouchKey))
+        {
+            StopCrouch();
+        }
     }
 
     private void FixedUpdate()
     {
-        if (!isKnockedBack)
-        {
-            Move();
-        }
+        Move();
 
         if (isWallSliding && rb.linearVelocity.y < -wallSlideSpeed)
         {
@@ -135,7 +136,13 @@ public class PlayerMovement : MonoBehaviour
 
     private void Move()
     {
-        float currentSpeed = isSprinting ? moveSpeed * sprintMultiplier : moveSpeed;
+        float currentSpeed = moveSpeed;
+
+        if (isSprinting)
+            currentSpeed *= sprintMultiplier;
+
+        if (isCrouching)
+            currentSpeed *= crouchSpeedMultiplier;
 
         Vector3 velocity = rb.linearVelocity;
         velocity.x = moveInput * currentSpeed;
@@ -182,7 +189,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (animator == null) return;
 
-        bool isRunning = Mathf.Abs(rb.linearVelocity.x) > 0.1f && isGrounded && !isKnockedBack;
+        bool isRunning = Mathf.Abs(rb.linearVelocity.x) > 0.1f && isGrounded;
         animator.SetBool("IsRun", isRunning);
     }
 
@@ -198,21 +205,12 @@ public class PlayerMovement : MonoBehaviour
     {
         HP -= amount;
         updatePlayerUI();
-
+     
         if (HP <= 0)
         {
             //player is dead
             gamemanager.instance.youLose();
         }
-    }
-
-    public void ApplyKnockback(Vector3 force)
-    {
-        isKnockedBack = true;
-        knockbackTimer = knockbackDuration;
-
-        rb.linearVelocity = Vector3.zero;
-        rb.AddForce(force, ForceMode.Impulse);
     }
 
     public void updatePlayerUI()
@@ -247,5 +245,17 @@ public class PlayerMovement : MonoBehaviour
         );
 
         jumpsLeft = maxJumps - 1;
+    }
+
+    private void StartCrouch()
+    {
+        isCrouching = true;
+        transform.localScale = crouchScale;
+    }
+
+    private void StopCrouch()
+    {
+        isCrouching = false;
+        transform.localScale = originalScale;
     }
 }
