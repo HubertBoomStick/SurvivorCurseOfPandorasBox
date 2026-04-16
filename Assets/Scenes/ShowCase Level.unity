@@ -1020,7 +1020,7 @@ Transform:
   m_Children:
   - {fileID: 7124155014536097773}
   m_Father: {fileID: 3501318466886612314}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 1.1807792, y: -0.11983137, z: 4.2077546}
 --- !u!4 &1017334135277518865
 Transform:
   m_ObjectHideFlags: 0
@@ -1036,7 +1036,7 @@ Transform:
   m_Children:
   - {fileID: 2006034183426593253}
   m_Father: {fileID: 7124155014536097773}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -2.6672137, y: 0.00000008940697, z: 0.00000070780516}
 --- !u!1 &1353070612298534984
 GameObject:
   m_ObjectHideFlags: 0
@@ -1084,7 +1084,7 @@ Transform:
   m_Children:
   - {fileID: 5983959357577760545}
   m_Father: {fileID: 3902607899224337048}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -89.98021, y: -0.000015258789, z: -0.000015258789}
 --- !u!4 &2006034183426593253
 Transform:
   m_ObjectHideFlags: 0
@@ -1208,7 +1208,7 @@ Transform:
   m_Children:
   - {fileID: 476481006803414847}
   m_Father: {fileID: 3902607899224337048}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -86.66287, y: -170.36812, z: 168.95981}
 --- !u!1 &3751620668792324681
 GameObject:
   m_ObjectHideFlags: 0
@@ -1241,7 +1241,7 @@ Transform:
   - {fileID: 1606848246146353652}
   - {fileID: 3501318466886612314}
   m_Father: {fileID: 5375059795752368646}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 89.98021, y: 0, z: 0}
 --- !u!1001 &4125409325688976310
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1484,7 +1484,7 @@ Transform:
   m_Children:
   - {fileID: 1017334135277518865}
   m_Father: {fileID: 476481006803414847}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -5.1139164, y: -0.000000022351742, z: 0.0000011622906}
 --- !u!95 &7336566741017051578
 Animator:
   serializedVersion: 7
@@ -1519,15 +1519,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7468157d62ac5564383f8646249847a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SlimeEnemy
-  attackCooldown: 1
+  attackCooldown: 2
   damage: 2
   boxCollider: {fileID: 7336566741017051581}
   playerLayer:
     serializedVersion: 2
     m_Bits: 128
-  sightDistance: -1.175
-  boxSizeMultiplier: {x: 1, y: 1, z: 1}
-  boxOffset: {x: 0, y: 0, z: 0}
+  anim: {fileID: 7336566741017051578}
+  boxSizeMultiplier: {x: 0.5, y: 0.5, z: 0.5}
+  boxOffset: {x: 0, y: 0, z: -3.5}
 --- !u!114 &7336566741017051580
 MonoBehaviour:
   m_ObjectHideFlags: 0
