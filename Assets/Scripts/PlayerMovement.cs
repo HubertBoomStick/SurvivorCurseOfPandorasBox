@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [SerializeField] CharacterController controller;
     [SerializeField] int HP;
     int HPOrig;
 
@@ -22,14 +23,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float sprintMultiplier = 1.5f;
     [SerializeField] private KeyCode sprintKey = KeyCode.LeftShift;
 
-    [Header("Crouch")]
-    [SerializeField] private KeyCode crouchKey = KeyCode.LeftControl;
-    [SerializeField] private float crouchSpeedMultiplier = 0.5f;
-    [SerializeField] private Vector3 crouchScale = new Vector3(1, 0.5f, 1);
-
-
     [Header("Double Jump")]
     [SerializeField] private int maxJumps = 2;
+    private int jumpsLeft;
 
     [Header("Wall Jump")]
     [SerializeField] private Transform wallCheck;
@@ -48,17 +44,11 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody rb;
     private Animator animator;
 
-    private Vector3 originalScale;
-
-    private int jumpsLeft;
-
     private bool isWallSliding;
     private bool isGrounded;
     private bool isTouchingWall;
     private bool isSprinting;
-    private bool isCrouching;
 
-    private float originalHeight;
     private float jumpTimer;
     private float moveInput;
 
@@ -66,8 +56,6 @@ public class PlayerMovement : MonoBehaviour
     {
         HPOrig = HP;
         updatePlayerUI();
-
-        originalScale = transform.localScale;
     }
 
     private void Awake()
@@ -118,24 +106,9 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        if (moveInput > 0)
-        {
-            transform.rotation = Quaternion.Euler(0f, 90f, 0f);
-        }
-        else if (moveInput < 0)
-        {
-            transform.rotation = Quaternion.Euler(0f, -90f, 0f);
-        }
-
-        if (Input.GetKeyDown(crouchKey))
-        {
-            StartCrouch();
-        }
-
-        if (Input.GetKeyUp(crouchKey))
-        {
-            StopCrouch();
-        }
+        CheckGround();
+        CheckWall();
+        UpdateAnimations();
     }
 
     private void FixedUpdate()
@@ -162,13 +135,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Move()
     {
-        float currentSpeed = moveSpeed;
-
-        if (isSprinting)
-            currentSpeed *= sprintMultiplier;
-
-        if (isCrouching)
-            currentSpeed *= crouchSpeedMultiplier;
+        float currentSpeed = isSprinting ? moveSpeed * sprintMultiplier : moveSpeed;
 
         Vector3 velocity = rb.linearVelocity;
         velocity.x = moveInput * currentSpeed;
@@ -280,17 +247,5 @@ public class PlayerMovement : MonoBehaviour
         );
 
         jumpsLeft = maxJumps - 1;
-    }
-
-    private void StartCrouch()
-    {
-        isCrouching = true;
-        transform.localScale = crouchScale;
-    }
-
-    private void StopCrouch()
-    {
-        isCrouching = false;
-        transform.localScale = originalScale;
     }
 }
