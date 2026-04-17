@@ -42,6 +42,13 @@ public class PlayerMovement : MonoBehaviour
     [Header("Wall Slide")]
     [SerializeField] private float wallSlideSpeed = 2f;
 
+    [Header("Dash")]
+    [SerializeField] private KeyCode dashKey = KeyCode.E;
+    [SerializeField] private float dashForce = 15f;
+    [SerializeField] private float dashDuration = 0.15f;
+    [SerializeField] private float dashCooldown = 0.5f;
+
+
     [Header("Knockback")]
     [SerializeField] private float knockbackDuration = 0.2f;
 
@@ -58,10 +65,12 @@ public class PlayerMovement : MonoBehaviour
     private bool isSprinting;
     private bool isCrouching;
     private bool isSliding;
-
     private bool isKnockedBack;
-    private float knockbackTimer;
+    private bool isDashing;
 
+    private float knockbackTimer;
+    private float dashTimer;
+    private float dashCooldownTimer;
     private float slideTimer;
     private float jumpTimer;
     private float moveInput;
@@ -130,6 +139,22 @@ public class PlayerMovement : MonoBehaviour
 
             if (Input.GetKeyUp(crouchKey) && !isSliding)
                 StopCrouch();
+
+            // Dash
+            if (Input.GetKeyDown(dashKey) && dashCooldownTimer <= 0 && !isSliding)
+            {
+                StartDash();
+            }
+
+            if (dashCooldownTimer > 0)
+                dashCooldownTimer -= Time.deltaTime;
+
+            if (isDashing)
+            {
+                dashTimer -= Time.deltaTime;
+                if (dashTimer <= 0)
+                    StopDash();
+            }
         }
 
         // Slide timer
@@ -143,7 +168,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!isKnockedBack)
+        if (!isKnockedBack && !isDashing)
             Move();
 
         if (isWallSliding && rb.linearVelocity.y < -wallSlideSpeed)
@@ -222,7 +247,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void WallJump()
     {
-        float direction = transform.rotation.y > 0 ? -1 : 1;
+        float direction = -transform.forward.x;
 
         rb.linearVelocity = new Vector3(
             wallJumpForce.x * direction,
@@ -287,5 +312,25 @@ public class PlayerMovement : MonoBehaviour
     public void updatePlayerUI()
     {
         gamemanager.instance.playerHPbar.fillAmount = (float)HP / HPOrig;
+    }
+
+    private void StartDash()
+    {
+        isDashing = true;
+        dashTimer = dashDuration;
+        dashCooldownTimer = dashCooldown;
+
+        float direction = transform.eulerAngles.y > 180f ? -1f : 1f;
+
+        rb.linearVelocity = new Vector3(
+            dashForce * direction,
+            0f,
+            0f
+        );
+    }
+
+    private void StopDash()
+    {
+        isDashing = false;
     }
 }
