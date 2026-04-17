@@ -27,6 +27,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float crouchSpeedMultiplier = 0.5f;
     [SerializeField] private Vector3 crouchScale = new Vector3(1, 0.5f, 1);
 
+    [Header("Slide")]
+    [SerializeField] private float slideSpeed = 12f;
+    [SerializeField] private float slideDuration = 3f;
 
     [Header("Double Jump")]
     [SerializeField] private int maxJumps = 2;
@@ -52,7 +55,9 @@ public class PlayerMovement : MonoBehaviour
     private bool isTouchingWall; 
     private bool isSprinting;
     private bool isCrouching;
+    private bool isSliding;
 
+    private float slideTimer;
     private float originalHeight;
     private float jumpTimer;
     private float moveInput;
@@ -106,12 +111,29 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetKeyDown(crouchKey))
         {
-            StartCrouch();
+            if (isSprinting && isGrounded && !isSliding)
+            {
+                StartSlide();
+            }
+            else
+            {
+                StartCrouch();
+            }
         }
 
-        if (Input.GetKeyUp(crouchKey))
+        if (Input.GetKeyUp(crouchKey) && !isSliding)
         {
             StopCrouch();
+        }
+
+        if (isSliding)
+        {
+            slideTimer -= Time.deltaTime;
+
+            if (slideTimer <= 0)
+            {
+                StopSlide();
+            }
         }
     }
 
@@ -138,11 +160,16 @@ public class PlayerMovement : MonoBehaviour
     {
         float currentSpeed = moveSpeed;
 
-        if (isSprinting)
-            currentSpeed *= sprintMultiplier;
+        if (isSliding)
+            currentSpeed = slideSpeed;
+        else
+        {
+            if (isSprinting)
+                currentSpeed *= sprintMultiplier;
 
-        if (isCrouching)
-            currentSpeed *= crouchSpeedMultiplier;
+            if (isCrouching)
+                currentSpeed *= crouchSpeedMultiplier;
+        }
 
         Vector3 velocity = rb.linearVelocity;
         velocity.x = moveInput * currentSpeed;
@@ -257,5 +284,20 @@ public class PlayerMovement : MonoBehaviour
     {
         isCrouching = false;
         transform.localScale = originalScale;
+    }
+
+    private void StartSlide()
+    {
+        isSliding = true;
+        slideTimer = slideDuration;
+
+        isCrouching = true;
+        transform.localScale = crouchScale;
+    }
+
+    private void StopSlide()
+    {
+        isSliding = false;
+        StopCrouch();
     }
 }
