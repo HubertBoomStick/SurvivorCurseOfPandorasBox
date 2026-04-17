@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [SerializeField] CharacterController controller;
     [SerializeField] int HP;
     int HPOrig;
 
@@ -43,16 +44,20 @@ public class PlayerMovement : MonoBehaviour
     [Header("Wall Slide")]
     [SerializeField] private float wallSlideSpeed = 2f;
 
+    [Header("Knockback")]
+    [SerializeField] private float knockbackDuration = 0.2f;
+
     private Rigidbody rb;
     private Animator animator;
 
     private Vector3 originalScale;
+    private float originalHeight;
 
     private int jumpsLeft;
 
     private bool isWallSliding;
     private bool isGrounded;
-    private bool isTouchingWall; 
+    private bool isTouchingWall;
     private bool isSprinting;
     private bool isCrouching;
     private bool isSliding;
@@ -62,15 +67,15 @@ public class PlayerMovement : MonoBehaviour
     private float jumpTimer;
     private float moveInput;
 
-   
-
     private void Start()
     {
         HPOrig = HP;
         updatePlayerUI();
 
         originalScale = transform.localScale;
+        originalHeight = transform.localScale.y;
     }
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -79,35 +84,57 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        moveInput = Input.GetAxisRaw("Horizontal");
-
-        CheckGround();
-        CheckWall();
-        UpdateAnimations();
-
-        isSprinting = Input.GetKey(sprintKey) && isGrounded;
-
-        if (Input.GetKeyDown(KeyCode.Space))
+        // knockback timer
+        if (isKnockedBack)
         {
-            if (isTouchingWall && !isGrounded)
+            knockbackTimer -= Time.deltaTime;
+
+            if (knockbackTimer <= 0f)
             {
-                WallJump();
-            }
-            else if (jumpsLeft > 0)
-            {
-                Jump();
-                jumpsLeft--;
+                isKnockedBack = false;
             }
         }
 
-        if (moveInput > 0)
+        // only allow control if not knocked back
+        if (!isKnockedBack)
         {
-            transform.rotation = Quaternion.Euler(0f, 90f, 0f);
-        }
-        else if (moveInput < 0)
-        {
-            transform.rotation = Quaternion.Euler(0f, -90f, 0f);
-        }
+            moveInput = Input.GetAxisRaw("Horizontal");
+
+            CheckGround();
+            CheckWall();
+            UpdateAnimations();
+
+            isSprinting = Input.GetKey(sprintKey) && isGrounded;
+
+            // jump logic
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                if (isTouchingWall && !isGrounded)
+                {
+                    WallJump();
+                }
+                else if (jumpsLeft > 0)
+                {
+                    Jump();
+                    jumpsLeft--;
+                }
+            }
+
+            // rotate player
+            if (moveInput > 0)
+            {
+                transform.rotation = Quaternion.Euler(0f, 90f, 0f);
+            }
+            else if (moveInput < 0)
+            {
+                transform.rotation = Quaternion.Euler(0f, -90f, 0f);
+            }
+
+            // crouch start
+            if (Input.GetKeyDown(crouchKey))
+            {
+                StartCrouch();
+            }
 
         if (Input.GetKeyDown(crouchKey))
         {
@@ -123,7 +150,9 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetKeyUp(crouchKey) && !isSliding)
         {
-            StopCrouch();
+            CheckGround();
+            CheckWall();
+            UpdateAnimations();
         }
 
         if (isSliding)
@@ -139,8 +168,12 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Move();
+        if (!isKnockedBack)
+        {
+            Move();
+        }
 
+        // wall slide limit
         if (isWallSliding && rb.linearVelocity.y < -wallSlideSpeed)
         {
             rb.linearVelocity = new Vector3(
@@ -216,7 +249,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (animator == null) return;
 
-        bool isRunning = Mathf.Abs(rb.linearVelocity.x) > 0.1f && isGrounded;
+        bool isRunning = Mathf.Abs(rb.linearVelocity.x) > 0.1f && isGrounded && !isKnockedBack;
         animator.SetBool("IsRun", isRunning);
     }
 
@@ -232,12 +265,21 @@ public class PlayerMovement : MonoBehaviour
     {
         HP -= amount;
         updatePlayerUI();
-     
+
         if (HP <= 0)
         {
             //player is dead
             gamemanager.instance.youLose();
         }
+    }
+
+    public void ApplyKnockback(Vector3 force)
+    {
+        isKnockedBack = true;
+        knockbackTimer = knockbackDuration;
+
+        rb.linearVelocity = Vector3.zero;
+        rb.AddForce(force, ForceMode.Impulse);
     }
 
     public void updatePlayerUI()
