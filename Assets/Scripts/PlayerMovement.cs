@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] CharacterController controller;
     [SerializeField] int HP;
     int HPOrig;
 
@@ -28,17 +27,29 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float crouchSpeedMultiplier = 0.5f;
     [SerializeField] private Vector3 crouchScale = new Vector3(1, 0.5f, 1);
 
+    [Header("Slide")]
+    [SerializeField] private float slideSpeed = 12f;
+    [SerializeField] private float slideDuration = 3f;
+
     [Header("Double Jump")]
     [SerializeField] private int maxJumps = 2;
 
     [Header("Wall Jump")]
-    [SerializeField] private Transform wallCheck;
     [SerializeField] private float wallCheckDistance = 0.5f;
     [SerializeField] private LayerMask wallLayer;
     [SerializeField] private Vector2 wallJumpForce = new Vector2(5f, 7f);
 
     [Header("Wall Slide")]
     [SerializeField] private float wallSlideSpeed = 2f;
+
+    [Header("Dash")]
+    [SerializeField] private KeyCode dashKey = KeyCode.E;
+    [SerializeField] private float dashForce = 15f;
+    [SerializeField] private float dashDuration = 0.15f;
+    [SerializeField] private float dashCooldown = 0.5f;
+
+    [Header("Float")]
+    [SerializeField] private float floatFallSpeed = 1.5f;
 
     [Header("Knockback")]
     [SerializeField] private float knockbackDuration = 0.2f;
@@ -47,7 +58,6 @@ public class PlayerMovement : MonoBehaviour
     private Animator animator;
 
     private Vector3 originalScale;
-    private float originalHeight;
 
     private int jumpsLeft;
 
@@ -56,10 +66,15 @@ public class PlayerMovement : MonoBehaviour
     private bool isTouchingWall;
     private bool isSprinting;
     private bool isCrouching;
-
+    private bool isSliding;
     private bool isKnockedBack;
-    private float knockbackTimer;
+    private bool isDashing;
+    private bool isFloating;
 
+    private float knockbackTimer;
+    private float dashTimer;
+    private float dashCooldownTimer;
+    private float slideTimer;
     private float jumpTimer;
     private float moveInput;
 
@@ -67,9 +82,7 @@ public class PlayerMovement : MonoBehaviour
     {
         HPOrig = HP;
         updatePlayerUI();
-
         originalScale = transform.localScale;
-        originalHeight = transform.localScale.y;
     }
 
     private void Awake()
@@ -84,26 +97,22 @@ public class PlayerMovement : MonoBehaviour
         if (isKnockedBack)
         {
             knockbackTimer -= Time.deltaTime;
-
             if (knockbackTimer <= 0f)
-            {
                 isKnockedBack = false;
-            }
         }
 
-        // only allow control if not knocked back
+        moveInput = Input.GetAxisRaw("Horizontal");
+
+        CheckGround();
+        CheckWall();
+        UpdateAnimations();
+
         if (!isKnockedBack)
         {
-            moveInput = Input.GetAxisRaw("Horizontal");
-
-            CheckGround();
-            CheckWall();
-            UpdateAnimations();
-
             isSprinting = Input.GetKey(sprintKey) && isGrounded;
 
-            // jump logic
-            if (Input.GetKeyDown(KeyCode.Space))
+            // Jump
+            if (Input.GetKeyDown(KeyCode.Space) && !isSliding)
             {
                 if (isTouchingWall && !isGrounded)
                 {
@@ -114,46 +123,63 @@ public class PlayerMovement : MonoBehaviour
                     Jump();
                     jumpsLeft--;
                 }
+
+                // Float after second jump
+                if (!isGrounded && jumpsLeft == 0 && Input.GetKey(KeyCode.Space) && rb.linearVelocity.y < 0)
+                    isFloating = true;
+                else
+                    isFloating = false;
             }
 
-            // rotate player
+            // Rotate
             if (moveInput > 0)
-            {
                 transform.rotation = Quaternion.Euler(0f, 90f, 0f);
-            }
             else if (moveInput < 0)
-            {
                 transform.rotation = Quaternion.Euler(0f, -90f, 0f);
-            }
 
-            // crouch start
+            // Slide or crouch
             if (Input.GetKeyDown(crouchKey))
             {
-                StartCrouch();
+                if (isSprinting && isGrounded && !isSliding)
+                    StartSlide();
+                else
+                    StartCrouch();
             }
 
-            // crouch stop
-            if (Input.GetKeyUp(crouchKey))
-            {
+            if (Input.GetKeyUp(crouchKey) && !isSliding)
                 StopCrouch();
+
+            // Dash
+            if (Input.GetKeyDown(dashKey) && dashCooldownTimer <= 0 && !isSliding)
+            {
+                StartDash();
+            }
+
+            if (dashCooldownTimer > 0)
+                dashCooldownTimer -= Time.deltaTime;
+
+            if (isDashing)
+            {
+                dashTimer -= Time.deltaTime;
+                if (dashTimer <= 0)
+                    StopDash();
             }
         }
-        else
+
+        // Slide timer
+        if (isSliding)
         {
-            CheckGround();
-            CheckWall();
-            UpdateAnimations();
+            slideTimer -= Time.deltaTime;
+            if (slideTimer <= 0)
+                StopSlide();
         }
     }
 
     private void FixedUpdate()
     {
-        if (!isKnockedBack)
-        {
+        if (!isKnockedBack && !isDashing)
             Move();
-        }
 
-        // wall slide limit
         if (isWallSliding && rb.linearVelocity.y < -wallSlideSpeed)
         {
             rb.linearVelocity = new Vector3(
@@ -165,7 +191,18 @@ public class PlayerMovement : MonoBehaviour
 
         if (rb.linearVelocity.y < 0)
         {
-            rb.linearVelocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
+            if (isFloating)
+            {
+                rb.linearVelocity = new Vector3(
+                    rb.linearVelocity.x,
+                    Mathf.Max(rb.linearVelocity.y, -floatFallSpeed),
+                    rb.linearVelocity.z
+                );
+            }
+            else
+            {
+                rb.linearVelocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
+            }
         }
     }
 
@@ -173,11 +210,16 @@ public class PlayerMovement : MonoBehaviour
     {
         float currentSpeed = moveSpeed;
 
-        if (isSprinting)
-            currentSpeed *= sprintMultiplier;
+        if (isSliding)
+            currentSpeed = slideSpeed;
+        else
+        {
+            if (isSprinting)
+                currentSpeed *= sprintMultiplier;
 
-        if (isCrouching)
-            currentSpeed *= crouchSpeedMultiplier;
+            if (isCrouching)
+                currentSpeed *= crouchSpeedMultiplier;
+        }
 
         Vector3 velocity = rb.linearVelocity;
         velocity.x = moveInput * currentSpeed;
@@ -194,9 +236,7 @@ public class PlayerMovement : MonoBehaviour
         jumpTimer = 0f;
 
         if (animator != null)
-        {
             animator.SetBool("IsJump", true);
-        }
     }
 
     private void CheckGround()
@@ -210,77 +250,24 @@ public class PlayerMovement : MonoBehaviour
         isGrounded = Physics.CheckSphere(feetPosition.position, groundCheckRadius, groundLayer);
 
         if (isGrounded)
-        {
             jumpsLeft = maxJumps;
-        }
 
         if (isGrounded && animator != null)
-        {
             animator.SetBool("IsJump", false);
-        }
     }
-
-    private void UpdateAnimations()
-    {
-        if (animator == null) return;
-
-        bool isRunning = Mathf.Abs(rb.linearVelocity.x) > 0.1f && isGrounded && !isKnockedBack;
-        animator.SetBool("IsRun", isRunning);
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        if (feetPosition == null) return;
-
-        Gizmos.color = isGrounded ? Color.green : Color.red;
-        Gizmos.DrawWireSphere(feetPosition.position, groundCheckRadius);
-    }
-
-    public void takeDamage(int amount)
-    {
-        HP -= amount;
-        updatePlayerUI();
-
-        if (HP <= 0)
-        {
-            //player is dead
-            gamemanager.instance.youLose();
-        }
-    }
-
-    public void ApplyKnockback(Vector3 force)
-    {
-        isKnockedBack = true;
-        knockbackTimer = knockbackDuration;
-
-        rb.linearVelocity = Vector3.zero;
-        rb.AddForce(force, ForceMode.Impulse);
-    }
-
-    public void updatePlayerUI()
-    {
-        gamemanager.instance.playerHPbar.fillAmount = (float)HP / HPOrig;
-    }
-
-    //public void spawnPlayer()
-    //{
-    //    controller.transform.position = gamemanager.instance.playerSpawnPos.transform.position;
-    //    Physics.SyncTransforms();
-    //    HP = HPOrig;
-    //    updatePlayerUI();
-    //}
 
     private void CheckWall()
     {
-        isTouchingWall = Physics.Raycast(transform.position, transform.right, wallCheckDistance, wallLayer) ||
-                         Physics.Raycast(transform.position, -transform.right, wallCheckDistance, wallLayer);
+        isTouchingWall =
+            Physics.Raycast(transform.position, transform.right, wallCheckDistance, wallLayer) ||
+            Physics.Raycast(transform.position, -transform.right, wallCheckDistance, wallLayer);
 
         isWallSliding = isTouchingWall && !isGrounded && rb.linearVelocity.y < 0;
     }
 
     private void WallJump()
     {
-        float direction = transform.rotation.y > 0 ? -1 : 1;
+        float direction = -transform.forward.x;
 
         rb.linearVelocity = new Vector3(
             wallJumpForce.x * direction,
@@ -301,5 +288,69 @@ public class PlayerMovement : MonoBehaviour
     {
         isCrouching = false;
         transform.localScale = originalScale;
+    }
+
+    private void StartSlide()
+    {
+        isSliding = true;
+        slideTimer = slideDuration;
+        StartCrouch();
+    }
+
+    private void StopSlide()
+    {
+        isSliding = false;
+        StopCrouch();
+    }
+
+    private void UpdateAnimations()
+    {
+        if (animator == null) return;
+
+        bool isRunning = Mathf.Abs(rb.linearVelocity.x) > 0.1f && isGrounded && !isSliding;
+        animator.SetBool("IsRun", isRunning);
+    }
+
+    public void ApplyKnockback(Vector3 force)
+    {
+        isKnockedBack = true;
+        knockbackTimer = knockbackDuration;
+
+        rb.linearVelocity = Vector3.zero;
+        rb.AddForce(force, ForceMode.Impulse);
+    }
+
+    public void takeDamage(int amount)
+    {
+        HP -= amount;
+        updatePlayerUI();
+
+        if (HP <= 0)
+            gamemanager.instance.youLose();
+    }
+
+    public void updatePlayerUI()
+    {
+        gamemanager.instance.playerHPbar.fillAmount = (float)HP / HPOrig;
+    }
+
+    private void StartDash()
+    {
+        isDashing = true;
+        dashTimer = dashDuration;
+        dashCooldownTimer = dashCooldown;
+
+        float direction = transform.eulerAngles.y > 180f ? -1f : 1f;
+
+        rb.linearVelocity = new Vector3(
+            dashForce * direction,
+            0f,
+            0f
+        );
+    }
+
+    private void StopDash()
+    {
+        isDashing = false;
     }
 }
