@@ -54,6 +54,13 @@ public class PlayerMovement : MonoBehaviour
     [Header("Knockback")]
     [SerializeField] private float knockbackDuration = 0.2f;
 
+    [Header("Attack")]
+    [SerializeField] private float attackCooldown = 0.3f;
+    [SerializeField] private int attackDamage = 1;
+    [SerializeField] private float attackRange = 1f;
+    [SerializeField] private Transform attackPoint;
+    [SerializeField] private LayerMask enemyLayer;
+
     private Rigidbody rb;
     private Animator animator;
 
@@ -70,7 +77,9 @@ public class PlayerMovement : MonoBehaviour
     private bool isKnockedBack;
     private bool isDashing;
     private bool isFloating;
+    private bool wasTouchingWall;
 
+    private float attackTimer;
     private float knockbackTimer;
     private float dashTimer;
     private float dashCooldownTimer;
@@ -129,6 +138,17 @@ public class PlayerMovement : MonoBehaviour
                     isFloating = true;
                 else
                     isFloating = false;
+            }
+
+            // Attack cooldown
+            if (attackTimer > 0)
+                attackTimer -= Time.deltaTime;
+
+            // Attack input
+            if (Input.GetMouseButtonDown(0) && attackTimer <= 0)
+            {
+                Attack();
+                attackTimer = attackCooldown;
             }
 
             // Rotate
@@ -258,9 +278,19 @@ public class PlayerMovement : MonoBehaviour
 
     private void CheckWall()
     {
-        isTouchingWall =
-            Physics.Raycast(transform.position, transform.right, wallCheckDistance, wallLayer) ||
-            Physics.Raycast(transform.position, -transform.right, wallCheckDistance, wallLayer);
+        bool touchingWallNow =
+            Physics.Raycast(transform.position, Vector3.right, wallCheckDistance, wallLayer) ||
+            Physics.Raycast(transform.position, Vector3.left, wallCheckDistance, wallLayer);
+
+        // Give one jump when first touching wall
+        if (touchingWallNow && !wasTouchingWall)
+        {
+            if (jumpsLeft < 1)
+                jumpsLeft = 1;
+        }
+
+        isTouchingWall = touchingWallNow;
+        wasTouchingWall = touchingWallNow;
 
         isWallSliding = isTouchingWall && !isGrounded && rb.linearVelocity.y < 0;
     }
@@ -352,5 +382,31 @@ public class PlayerMovement : MonoBehaviour
     private void StopDash()
     {
         isDashing = false;
+    }
+
+    private void Attack()
+    {
+        Collider[] hits = Physics.OverlapSphere(
+            attackPoint.position,
+            attackRange,
+            enemyLayer
+        );
+
+        foreach (Collider hit in hits)
+        {
+            IDamage damageable = hit.GetComponent<IDamage>();
+            if (damageable != null)
+            {
+                damageable.takeDamage(attackDamage);
+            }
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (attackPoint == null) return;
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(attackPoint.position, attackRange);
     }
 }
