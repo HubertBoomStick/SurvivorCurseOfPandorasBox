@@ -61,11 +61,11 @@ public class SlimeEnemy : MonoBehaviour
 
         for (int i = 0; i < hits.Length; i++)
         {
-            PlayerMovement player = hits[i].GetComponent<PlayerMovement>();
+            IDamage damageable = hits[i].GetComponent<IDamage>();
 
-            if (player != null)
+            if (damageable != null)
             {
-                player.takeDamage(damage);
+                damageable.takeDamage(damage);
             }
         }
     }
