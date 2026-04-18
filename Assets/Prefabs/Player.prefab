@@ -31,6 +31,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2582534339378635481}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1444523260194178506
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8137844047165591273}
+  m_Layer: 0
+  m_Name: Attackpoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8137844047165591273
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1444523260194178506}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.05, y: 1.12, z: 0.96}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2582534339378635481}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4211860582495845689
 GameObject:
   m_ObjectHideFlags: 0
@@ -97,6 +128,7 @@ Transform:
   - {fileID: 9209745709564639743}
   - {fileID: 8930799976491489328}
   - {fileID: 5342131172524177989}
+  - {fileID: 8137844047165591273}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1115596114541700741
@@ -111,8 +143,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63867d549a6f0414097f2a056c969312, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
-  controller: {fileID: 0}
-  HP: 0
+  HP: 10
   moveSpeed: 5
   jumpForce: 7
   feetPosition: {fileID: 8930799976491489328}
@@ -122,14 +153,33 @@ MonoBehaviour:
     m_Bits: 8
   jumpCD: 0.1
   fallMultiplier: 2
+  sprintMultiplier: 1.5
+  sprintKey: 304
+  crouchKey: 306
+  crouchSpeedMultiplier: 0.5
+  crouchScale: {x: 1, y: 0.5, z: 1}
+  slideSpeed: 12
+  slideDuration: 3
   maxJumps: 2
-  wallCheck: {fileID: 5342131172524177989}
   wallCheckDistance: 0.5
   wallLayer:
     serializedVersion: 2
     m_Bits: 64
   wallJumpForce: {x: 5, y: 7}
   wallSlideSpeed: 2
+  dashKey: 101
+  dashForce: 15
+  dashDuration: 0.15
+  dashCooldown: 0.5
+  floatFallSpeed: 1.5
+  knockbackDuration: 0.2
+  attackCooldown: 0.1
+  attackDamage: 1
+  attackRange: 1
+  attackPoint: {fileID: 8137844047165591273}
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!54 &8311067290835393715
 Rigidbody:
   m_ObjectHideFlags: 0
