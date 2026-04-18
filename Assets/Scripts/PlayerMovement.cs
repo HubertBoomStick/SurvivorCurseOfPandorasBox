@@ -48,6 +48,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float dashDuration = 0.15f;
     [SerializeField] private float dashCooldown = 0.5f;
 
+    [Header("Float")]
+    [SerializeField] private float floatFallSpeed = 1.5f;
 
     [Header("Knockback")]
     [SerializeField] private float knockbackDuration = 0.2f;
@@ -67,6 +69,7 @@ public class PlayerMovement : MonoBehaviour
     private bool isSliding;
     private bool isKnockedBack;
     private bool isDashing;
+    private bool isFloating;
 
     private float knockbackTimer;
     private float dashTimer;
@@ -120,6 +123,12 @@ public class PlayerMovement : MonoBehaviour
                     Jump();
                     jumpsLeft--;
                 }
+
+                // Float after second jump
+                if (!isGrounded && jumpsLeft == 0 && Input.GetKey(KeyCode.Space) && rb.linearVelocity.y < 0)
+                    isFloating = true;
+                else
+                    isFloating = false;
             }
 
             // Rotate
@@ -182,7 +191,18 @@ public class PlayerMovement : MonoBehaviour
 
         if (rb.linearVelocity.y < 0)
         {
-            rb.linearVelocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
+            if (isFloating)
+            {
+                rb.linearVelocity = new Vector3(
+                    rb.linearVelocity.x,
+                    Mathf.Max(rb.linearVelocity.y, -floatFallSpeed),
+                    rb.linearVelocity.z
+                );
+            }
+            else
+            {
+                rb.linearVelocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
+            }
         }
     }
 
