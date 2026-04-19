@@ -12,7 +12,7 @@ public class gamemanager : MonoBehaviour
     [SerializeField] GameObject menuPause;
     [SerializeField] GameObject menuWin;
     [SerializeField] GameObject menuLose;
-
+    [SerializeField] GameObject menuAudio;
 
     public Image playerHPbar;
     public GameObject player;
@@ -115,6 +115,23 @@ public class gamemanager : MonoBehaviour
         statePause();
         menuActive = menuLose;
         menuActive.SetActive(true);
+    }
+
+    public void openAudio()
+    {
+        if (menuActive != null)
+            menuActive.SetActive(false);
+
+        menuActive = menuAudio;
+        menuAudio.SetActive(true);
+    }
+
+    public void backToPause()
+    {
+        menuAudio.SetActive(false);
+
+        menuActive = menuPause;
+        menuPause.SetActive(true);
     }
 
 }
