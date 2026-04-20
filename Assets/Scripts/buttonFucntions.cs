@@ -30,14 +30,4 @@ public class buttonFunctions : MonoBehaviour
     //    gamemanager.instance.playerScript.spawnPlayer();
     //    gamemanager.instance.stateUnpause();
     //}
-
-    public void openAudio()
-    {
-        gamemanager.instance.openAudio();
-    }
-
-    public void backToPause()
-    {
-        gamemanager.instance.backToPause();
-    }
 }
