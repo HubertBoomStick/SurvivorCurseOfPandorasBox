@@ -32,7 +32,7 @@ public class DragonBoss : MonoBehaviour, IDamage
     [SerializeField] private float glideSideDistance = 25f;
     [SerializeField] private float glideSpeed = 12f;
     [SerializeField] private float glideAttackHeightOffset = 1.5f;
-    [SerializeField] private float glideReturnHeight = 6f;
+    
     [SerializeField] private bool alternateGlideSides = true;
 
     [Header("Glide Indicators")]
