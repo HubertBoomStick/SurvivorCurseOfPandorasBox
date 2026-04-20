@@ -14,6 +14,7 @@ public class gamemanager : MonoBehaviour
     [SerializeField] GameObject menuLose;
     [SerializeField] GameObject menuAudio;
 
+
     public Image playerHPbar;
     public GameObject player;
     public PlayerMovement playerScript;
@@ -116,7 +117,6 @@ public class gamemanager : MonoBehaviour
         menuActive = menuLose;
         menuActive.SetActive(true);
     }
-
     public void openAudio()
     {
         if (menuActive != null)
@@ -133,5 +133,4 @@ public class gamemanager : MonoBehaviour
         menuActive = menuPause;
         menuPause.SetActive(true);
     }
-
 }
