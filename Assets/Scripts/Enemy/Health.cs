@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class Health : MonoBehaviour
+public class Health : MonoBehaviour , IDamage
 {
     [Header("Health")]
     [SerializeField] private float startingHealth;
@@ -32,8 +32,8 @@ public class Health : MonoBehaviour
         {
             if (!dead)
             {
-                GetComponent<PlayerMovement>().enabled = false;
                 dead = true;
+                Destroy(gameObject);
             }
         }
     }
@@ -52,5 +52,9 @@ public class Health : MonoBehaviour
             yield return new WaitForSeconds(iFramesDuration / (numberOfFlashes * 2));
         }
         Physics2D.IgnoreLayerCollision(10, 11, false);
+    }
+    public void takeDamage(int amount)
+    {
+        TakeDamage(amount);
     }
 }
