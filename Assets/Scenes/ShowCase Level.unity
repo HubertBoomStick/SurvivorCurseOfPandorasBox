@@ -733,7 +733,7 @@ MonoBehaviour:
   glideOffscreenHeight: 8
   glideWarningTime: 1.2
   glideSideDistance: 25
-  glideSpeed: 35
+  glideSpeed: 50
   glideAttackHeightOffset: 1.5
   alternateGlideSides: 1
   leftGlideIndicator: {fileID: 1123119121}
@@ -2419,6 +2419,10 @@ PrefabInstance:
     - target: {fileID: 3075854043356413614, guid: a55110388e2ce014882f29c052fe0fc1, type: 3}
       propertyPath: m_Name
       value: SLIME-BLUE
+      objectReference: {fileID: 0}
+    - target: {fileID: 5551228345294264586, guid: a55110388e2ce014882f29c052fe0fc1, type: 3}
+      propertyPath: damage
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
