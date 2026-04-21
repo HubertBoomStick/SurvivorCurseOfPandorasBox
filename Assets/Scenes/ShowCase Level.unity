@@ -733,9 +733,8 @@ MonoBehaviour:
   glideOffscreenHeight: 8
   glideWarningTime: 1.2
   glideSideDistance: 25
-  glideSpeed: 35
+  glideSpeed: 50
   glideAttackHeightOffset: 1.5
-  glideReturnHeight: 6
   alternateGlideSides: 1
   leftGlideIndicator: {fileID: 1123119121}
   rightGlideIndicator: {fileID: 1825089072}
@@ -2421,6 +2420,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SLIME-BLUE
       objectReference: {fileID: 0}
+    - target: {fileID: 5551228345294264586, guid: a55110388e2ce014882f29c052fe0fc1, type: 3}
+      propertyPath: damage
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2491,6 +2494,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1141227714181792508, guid: 8bba85ef7c890d44795906990a1644b9, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1141227714181792508, guid: 8bba85ef7c890d44795906990a1644b9, type: 3}
+      propertyPath: m_Color.b
+      value: 0.14509805
+      objectReference: {fileID: 0}
+    - target: {fileID: 1141227714181792508, guid: 8bba85ef7c890d44795906990a1644b9, type: 3}
+      propertyPath: m_Color.g
+      value: 0.44313726
+      objectReference: {fileID: 0}
+    - target: {fileID: 1141227714181792508, guid: 8bba85ef7c890d44795906990a1644b9, type: 3}
+      propertyPath: m_Color.r
+      value: 0.6117647
+      objectReference: {fileID: 0}
     - target: {fileID: 1185702960010822096, guid: 8bba85ef7c890d44795906990a1644b9, type: 3}
       propertyPath: m_Pivot.x
       value: 0
