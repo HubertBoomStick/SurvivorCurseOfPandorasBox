@@ -395,6 +395,13 @@ public class PlayerMovement : MonoBehaviour, IDamage
         foreach (Collider hit in hits)
         {
             IDamage damageable = hit.GetComponent<IDamage>();
+
+            if (damageable == null)
+                damageable = hit.GetComponentInParent<IDamage>();
+
+            if (damageable == null)
+                damageable = hit.GetComponentInChildren<IDamage>();
+
             if (damageable != null)
             {
                 damageable.takeDamage(attackDamage);
