@@ -16,6 +16,7 @@ public class gamemanager : MonoBehaviour
 
 
     public Image playerHPbar;
+    public Image lifeStealBar;
     public GameObject player;
     public PlayerMovement playerScript;
     public GameObject playerSpawnPos;
@@ -132,5 +133,10 @@ public class gamemanager : MonoBehaviour
 
         menuActive = menuPause;
         menuPause.SetActive(true);
+    }
+
+    public void updateLifeStealUI(int current, int max)
+    {
+        lifeStealBar.fillAmount = (float)current / max;
     }
 }
