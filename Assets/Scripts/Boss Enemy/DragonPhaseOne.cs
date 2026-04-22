@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class DragonPhaseOne : MonoBehaviour
 {
@@ -8,18 +8,34 @@ public class DragonPhaseOne : MonoBehaviour
     [SerializeField] private DragonAirSpitAttack airSpitAttack;
     [SerializeField] private DragonAirBreathAttack airBreathAttack;
 
-    [Header("Phase 1 Settings")]
+    [Header("Take Off")]
     [SerializeField] private float takeOffHeight = 6f;
     [SerializeField] private float takeOffSpeed = 4f;
+
+    [Header("Attack Timing")]
     [SerializeField] private float attackCooldown = 5f;
+
+    [Header("Flying Movement")]
+    [SerializeField] private float chaseMoveSpeed = 4f;
+    [SerializeField] private float chaseStopDistance = 6f;
+    [SerializeField] private float chaseDuration = 2.5f;
+    [SerializeField] private float lingerMinTime = 3f;
+    [SerializeField] private float lingerMaxTime = 4f;
+
+    [Header("Facing")]
     [SerializeField] private Vector3 facingRotationOffset = new Vector3(0f, 180f, 0f);
 
     private DragonBoss boss;
     private bool phaseActive;
     private bool isBusy;
     private bool isTakingOff;
+
+    private bool isChasingPlayer;
+    private bool isLingering;
+
     private Vector3 takeOffTargetPosition;
     private float cooldownTimer = Mathf.Infinity;
+    private float movementStateTimer = 0f;
 
     public void SetBoss(DragonBoss dragonBoss)
     {
@@ -70,15 +86,18 @@ public class DragonPhaseOne : MonoBehaviour
                 takeOffTargetPosition,
                 takeOffSpeed * Time.deltaTime
             );
+
+            return;
         }
 
         if (!isBusy)
         {
+            UpdateFlyingMovement();
             FacePlayer();
 
             if (cooldownTimer >= attackCooldown)
             {
-                ChooseAttack();
+                ChooseAttackByDistance();
             }
         }
     }
@@ -101,6 +120,8 @@ public class DragonPhaseOne : MonoBehaviour
 
         isBusy = false;
         cooldownTimer = attackCooldown;
+
+        StartChaseState();
     }
 
     public void StopPhase()
@@ -108,6 +129,9 @@ public class DragonPhaseOne : MonoBehaviour
         phaseActive = false;
         isBusy = false;
         isTakingOff = false;
+        isChasingPlayer = false;
+        isLingering = false;
+        movementStateTimer = 0f;
 
         if (glideAttack != null)
             glideAttack.StopAttack();
@@ -133,6 +157,67 @@ public class DragonPhaseOne : MonoBehaviour
         cooldownTimer = 0f;
     }
 
+    private void UpdateFlyingMovement()
+    {
+        movementStateTimer -= Time.deltaTime;
+
+        if (isLingering)
+        {
+            if (movementStateTimer <= 0f)
+            {
+                StartChaseState();
+            }
+
+            return;
+        }
+
+        if (isChasingPlayer)
+        {
+            MoveTowardPlayer();
+
+            if (movementStateTimer <= 0f)
+            {
+                StartLingerState();
+            }
+        }
+        else
+        {
+            StartChaseState();
+        }
+    }
+
+    private void StartChaseState()
+    {
+        isChasingPlayer = true;
+        isLingering = false;
+        movementStateTimer = chaseDuration;
+    }
+
+    private void StartLingerState()
+    {
+        isChasingPlayer = false;
+        isLingering = true;
+        movementStateTimer = Random.Range(lingerMinTime, lingerMaxTime);
+    }
+
+    private void MoveTowardPlayer()
+    {
+        Vector3 targetPosition = player.position;
+        targetPosition.y = transform.position.y;
+
+        Vector3 toPlayer = targetPosition - transform.position;
+        float distance = toPlayer.magnitude;
+
+        if (distance <= chaseStopDistance)
+            return;
+
+        transform.position = Vector3.MoveTowards(
+            transform.position,
+            targetPosition,
+            chaseMoveSpeed * Time.deltaTime
+        );
+    }
+
     private void FacePlayer()
     {
         Vector3 lookDir = player.position - transform.position;
@@ -145,27 +230,101 @@ public class DragonPhaseOne : MonoBehaviour
         }
     }
 
-    private void ChooseAttack()
+    private void ChooseAttackByDistance()
     {
+        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+
         isBusy = true;
         cooldownTimer = 0f;
 
-        int attackIndex = Random.Range(0, 3);
+        // 0 = Glide
+        // 1 = Air Spit Fire
+        // 2 = Air Fire Breath
+
+        int attackIndex;
+
+        if (distanceToPlayer <= 10f)
+        {
+            // Equal chance
+            attackIndex = Random.Range(0, 3);
+        }
+        else if (distanceToPlayer <= 15f)
+        {
+            // Glide favored
+            attackIndex = GetWeightedAttackIndex(35, 25, 40);
+        }
+        else if (distanceToPlayer <= 20f)
+        {
+            // Fire breath favored
+            attackIndex = GetWeightedAttackIndex(40, 50, 10);
+        }
+        else
+        {
+            // Spit fire favored
+            attackIndex = GetWeightedAttackIndex(40, 50, 10);
+        }
 
         switch (attackIndex)
         {
             case 0:
                 glideAttack.Execute();
                 break;
+
             case 1:
                 airSpitAttack.Execute();
                 break;
+
             case 2:
                 airBreathAttack.Execute();
                 break;
         }
     }
 
+    private int GetWeightedAttackIndex(int glideWeight, int spitWeight, int breathWeight)
+    {
+        int total = glideWeight + spitWeight + breathWeight;
+        int roll = Random.Range(0, total);
+
+        if (roll < glideWeight)
+            return 0;
+
+        roll -= glideWeight;
+
+        if (roll < spitWeight)
+            return 1;
+
+        return 2;
+    }
+
     public DragonBoss GetBoss() => boss;
     public Transform GetPlayer() => player;
+
+    private void OnDrawGizmosSelected()
+    {
+        if (player == null)
+            return;
+
+        // 🟢 Chase Stop Distance
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, chaseStopDistance);
+
+        // 🔵 Close Range (<= 10)
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, 10f);
+
+        // 🟡 Mid Range (<= 15)
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, 15f);
+
+        // 🔴 Far Range (<= 20)
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, 20f);
+
+        // 🟣 Line to player (for debugging)
+        if (player != null)
+        {
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawLine(transform.position, player.position);
+        }
+    }
 }
