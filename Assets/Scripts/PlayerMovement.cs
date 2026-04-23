@@ -486,4 +486,15 @@ public class PlayerMovement : MonoBehaviour, IDamage
         DealDamage(hits);
     }
 
+    public void ResetHealth()
+    {
+        HP = HPOrig;
+        updatePlayerUI();
+    }
+
+    public void ResetLifeSteal()
+    {
+        lifeSteal = 0;
+        gamemanager.instance.updateLifeStealUI(lifeSteal, maxLifeSteal);
+    }
 }
