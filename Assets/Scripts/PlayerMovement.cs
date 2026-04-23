@@ -159,7 +159,16 @@ public class PlayerMovement : MonoBehaviour, IDamage
             // Attack input
             if (Input.GetMouseButtonDown(0) && attackTimer <= 0)
             {
-                Attack();
+                bool holdingW = Input.GetKey(KeyCode.W);
+                bool holdingS = Input.GetKey(KeyCode.S);
+
+                if (holdingW)
+                    AttackUp();
+                else if (holdingS)
+                    AttackDown();
+                else
+                    Attack();
+
                 attackTimer = attackCooldown;
             }
 
@@ -395,7 +404,6 @@ public class PlayerMovement : MonoBehaviour, IDamage
     {
         isDashing = false;
     }
-
     private void Attack()
     {
         Collider[] hits = Physics.OverlapSphere(
@@ -404,24 +412,8 @@ public class PlayerMovement : MonoBehaviour, IDamage
             enemyLayer
         );
 
-        bool hitSomething = false;
-
-        foreach (Collider hit in hits)
-        {
-            IDamage damageable = hit.GetComponent<IDamage>();
-            if (damageable != null)
-            {
-                damageable.takeDamage(attackDamage);
-                hitSomething = true;
-            }
-        }
-
-        if (hitSomething)
-        {
-            AddLifeSteal(lifeStealPerHit);
-        }
+        DealDamage(hits);
     }
-
     private void OnDrawGizmosSelected()
     {
         if (attackPoint == null) return;
@@ -448,4 +440,50 @@ public class PlayerMovement : MonoBehaviour, IDamage
         lifeSteal = 0;
         gamemanager.instance.updateLifeStealUI(lifeSteal, maxLifeSteal);
     }
+
+    private void DealDamage(Collider[] hits)
+    {
+        bool hitSomething = false;
+
+        foreach (Collider hit in hits)
+        {
+            IDamage damageable = hit.GetComponent<IDamage>();
+            if (damageable != null)
+            {
+                damageable.takeDamage(attackDamage);
+                hitSomething = true;
+            }
+        }
+
+        if (hitSomething)
+        {
+            AddLifeSteal(lifeStealPerHit);
+        }
+    }
+    private void AttackUp()
+    {
+        Vector3 attackPos = attackPoint.position + Vector3.up * attackRange;
+
+        Collider[] hits = Physics.OverlapSphere(
+            attackPos,
+            attackRange,
+            enemyLayer
+        );
+
+        DealDamage(hits);
+    }
+
+    private void AttackDown()
+    {
+        Vector3 attackPos = attackPoint.position + Vector3.down * attackRange;
+
+        Collider[] hits = Physics.OverlapSphere(
+            attackPos,
+            attackRange,
+            enemyLayer
+        );
+
+        DealDamage(hits);
+    }
+
 }
