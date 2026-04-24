@@ -1,59 +1,39 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class DragonBreath : MonoBehaviour
 {
     [Header("Damage Settings")]
-    [SerializeField] private int damage = 18;
-    [SerializeField] private float tickRate = 0.25f;
+    [SerializeField] private int damage = 1;
+    [SerializeField] private float tickRate = 0.75f;
     [SerializeField] private LayerMask hitLayers;
 
-    private float tickTimer;
-    private BoxCollider breathCollider;
+    private readonly Dictionary<Collider, float> damageTimers = new Dictionary<Collider, float>();
 
-    public void SetUp(int newDamage, float lifeTime, LayerMask newHitLayers)
+    public void SetUp(int newDamage, LayerMask newHitLayers)
     {
         damage = newDamage;
         hitLayers = newHitLayers;
-
-        Destroy(gameObject, lifeTime);
+        damageTimers.Clear();
     }
 
-    private void Awake()
+    private void OnTriggerStay(Collider other)
     {
-        breathCollider = GetComponent<BoxCollider>();
-    }
-
-    private void Update()
-    {
-        tickTimer += Time.deltaTime;
-
-        if (tickTimer >= tickRate)
-        {
-            tickTimer = 0f;
-            DealBreathDamage();
-        }
-    }
-
-    private void DealBreathDamage()
-    {
-        if (breathCollider == null)
+        if (((1 << other.gameObject.layer) & hitLayers) == 0)
             return;
 
-        Vector3 worldCenter = breathCollider.transform.TransformPoint(breathCollider.center);
-        Vector3 halfExtents = Vector3.Scale(breathCollider.size * 0.5f, breathCollider.transform.lossyScale);
-        Quaternion rotation = breathCollider.transform.rotation;
-
-        Collider[] hits = Physics.OverlapBox(
-            worldCenter,
-            halfExtents,
-            rotation,
-            hitLayers
-        );
-
-        for (int i = 0; i < hits.Length; i++)
+        if (!damageTimers.ContainsKey(other))
         {
-            IDamage damageable = hits[i].GetComponent<IDamage>();
+            damageTimers[other] = 0f;
+        }
 
+        damageTimers[other] += Time.deltaTime;
+
+        if (damageTimers[other] >= tickRate)
+        {
+            damageTimers[other] = 0f;
+
+            IDamage damageable = other.GetComponent<IDamage>();
             if (damageable != null)
             {
                 damageable.takeDamage(damage);
@@ -61,18 +41,16 @@ public class DragonBreath : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmosSelected()
+    private void OnTriggerExit(Collider other)
     {
-        BoxCollider box = GetComponent<BoxCollider>();
+        if (damageTimers.ContainsKey(other))
+        {
+            damageTimers.Remove(other);
+        }
+    }
 
-        if (box == null)
-            return;
-
-        Gizmos.color = Color.magenta;
-
-        Matrix4x4 oldMatrix = Gizmos.matrix;
-        Gizmos.matrix = box.transform.localToWorldMatrix;
-        Gizmos.DrawWireCube(box.center, box.size);
-        Gizmos.matrix = oldMatrix;
+    private void OnDisable()
+    {
+        damageTimers.Clear();
     }
 }

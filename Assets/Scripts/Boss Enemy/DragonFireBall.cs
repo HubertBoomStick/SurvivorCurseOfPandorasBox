@@ -3,9 +3,9 @@ using UnityEngine;
 public class DragonFireball : MonoBehaviour
 {
     [Header("Settings")]
-    [SerializeField] private float speed = 12f;
-    [SerializeField] private float lifeTime = 5f;
-    [SerializeField] private int damage = 15;
+    [SerializeField] private float speed = 18f;
+    [SerializeField] private float lifeTime = 3f;
+    [SerializeField] private int damage = 1;
     [SerializeField] private LayerMask hitLayers;
 
     private Vector3 moveDirection;
