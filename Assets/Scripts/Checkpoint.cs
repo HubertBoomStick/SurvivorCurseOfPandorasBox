@@ -5,9 +5,9 @@ public class checkPoint : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && gamemanager.instance.playerSpawnPos.transform.position != transform.position)
         {
-            gamemanager.instance.playerSpawnPos = transform.position;
+            gamemanager.instance.playerSpawnPos.transform.position = transform.position;
             StartCoroutine(showPopup());
         }
     }
