@@ -13,17 +13,14 @@ public class gamemanager : MonoBehaviour
     [SerializeField] GameObject menuWin;
     [SerializeField] GameObject menuLose;
     [SerializeField] GameObject menuAudio;
-    [SerializeField] GameObject menuControl;
 
 
     public Image playerHPbar;
-    public Image lifeStealBar;
     public GameObject player;
     public PlayerMovement playerScript;
+    public GameObject playerSpawnPos;
     public GameObject checkpointPopup;
     public bool isPaused;
-
-    public Vector3 playerSpawnPos;
 
     private float timeScaleOrig;
 
@@ -32,10 +29,6 @@ public class gamemanager : MonoBehaviour
     public static bool skipStartMenu;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        playerSpawnPos = player.transform.position;
-    }
     void Awake()
     {
         instance = this;
@@ -133,43 +126,11 @@ public class gamemanager : MonoBehaviour
         menuAudio.SetActive(true);
     }
 
-    public void openControl()
-    {
-        if (menuActive != null)
-            menuActive.SetActive(false);
-
-        menuActive = menuControl;
-        menuControl.SetActive(true);
-    }
-
     public void backToPause()
     {
-        if (menuActive != null)
-            menuActive.SetActive(false);
+        menuAudio.SetActive(false);
 
         menuActive = menuPause;
         menuPause.SetActive(true);
-    }
-
-    public void updateLifeStealUI(int current, int max)
-    {
-        lifeStealBar.fillAmount = (float)current / max;
-    }
-
-    public void RespawnPlayer()
-    {
-        player.transform.position = playerSpawnPos;
-
-        Rigidbody rb = player.GetComponent<Rigidbody>();
-        if (rb != null)
-        {
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-        }
-
-        playerScript.ResetHealth();
-        playerScript.ResetLifeSteal();
-
-        stateUnpause();
     }
 }
