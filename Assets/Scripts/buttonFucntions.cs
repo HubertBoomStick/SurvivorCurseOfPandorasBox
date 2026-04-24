@@ -34,6 +34,11 @@ public class buttonFunctions : MonoBehaviour
         gamemanager.instance.openAudio();
     }
 
+    public void openControl()
+    {
+        gamemanager.instance.openControl();
+    }
+
     public void backToPause()
     {
         gamemanager.instance.backToPause();
