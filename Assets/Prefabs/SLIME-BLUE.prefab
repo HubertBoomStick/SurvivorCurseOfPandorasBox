@@ -330,8 +330,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7468157d62ac5564383f8646249847a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SlimeEnemy
-  attackCooldown: 3
-  damage: 1
+  attackCooldown: 2
+  damage: 2
   boxCollider: {fileID: 9186560151699430571}
   playerLayer:
     serializedVersion: 2
