@@ -5,11 +5,6 @@ public class PlayerMovement : MonoBehaviour, IDamage
     [SerializeField] int HP;
     int HPOrig;
 
-    [Header("Life Steal Bar")]
-    [SerializeField] private int lifeSteal = 0;
-    [SerializeField] private int maxLifeSteal = 10;
-    [SerializeField] private int lifeStealPerHit = 1;
-
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float jumpForce = 7f;
@@ -48,7 +43,7 @@ public class PlayerMovement : MonoBehaviour, IDamage
     [SerializeField] private float wallSlideSpeed = 2f;
 
     [Header("Dash")]
-    [SerializeField] private KeyCode dashKey = KeyCode.Q;
+    [SerializeField] private KeyCode dashKey = KeyCode.E;
     [SerializeField] private float dashForce = 15f;
     [SerializeField] private float dashDuration = 0.15f;
     [SerializeField] private float dashCooldown = 0.5f;
@@ -97,7 +92,6 @@ public class PlayerMovement : MonoBehaviour, IDamage
         HPOrig = HP;
         updatePlayerUI();
         originalScale = transform.localScale;
-        gamemanager.instance.updateLifeStealUI(lifeSteal, maxLifeSteal);
     }
 
     private void Awake()
@@ -146,12 +140,6 @@ public class PlayerMovement : MonoBehaviour, IDamage
                     isFloating = false;
             }
 
-            // life steal bar
-            if (Input.GetKeyDown(KeyCode.E) && lifeSteal >= maxLifeSteal)
-            {
-                HealFull();
-            }
-
             // Attack cooldown
             if (attackTimer > 0)
                 attackTimer -= Time.deltaTime;
@@ -159,16 +147,7 @@ public class PlayerMovement : MonoBehaviour, IDamage
             // Attack input
             if (Input.GetMouseButtonDown(0) && attackTimer <= 0)
             {
-                bool holdingW = Input.GetKey(KeyCode.W);
-                bool holdingS = Input.GetKey(KeyCode.S);
-
-                if (holdingW)
-                    AttackUp();
-                else if (holdingS)
-                    AttackDown();
-                else
-                    Attack();
-
+                Attack();
                 attackTimer = attackCooldown;
             }
 
@@ -404,6 +383,7 @@ public class PlayerMovement : MonoBehaviour, IDamage
     {
         isDashing = false;
     }
+
     private void Attack()
     {
         Collider[] hits = Physics.OverlapSphere(
@@ -412,89 +392,28 @@ public class PlayerMovement : MonoBehaviour, IDamage
             enemyLayer
         );
 
-        DealDamage(hits);
+        foreach (Collider hit in hits)
+        {
+            IDamage damageable = hit.GetComponent<IDamage>();
+
+            if (damageable == null)
+                damageable = hit.GetComponentInParent<IDamage>();
+
+            if (damageable == null)
+                damageable = hit.GetComponentInChildren<IDamage>();
+
+            if (damageable != null)
+            {
+                damageable.takeDamage(attackDamage);
+            }
+        }
     }
+
     private void OnDrawGizmosSelected()
     {
         if (attackPoint == null) return;
 
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(attackPoint.position, attackRange);
-    }
-
-    private void AddLifeSteal(int amount)
-    {
-        lifeSteal += amount;
-
-        if (lifeSteal > maxLifeSteal)
-            lifeSteal = maxLifeSteal;
-
-        gamemanager.instance.updateLifeStealUI(lifeSteal, maxLifeSteal);
-    }
-
-    private void HealFull()
-    {
-        HP = HPOrig;
-        updatePlayerUI();
-
-        lifeSteal = 0;
-        gamemanager.instance.updateLifeStealUI(lifeSteal, maxLifeSteal);
-    }
-
-    private void DealDamage(Collider[] hits)
-    {
-        bool hitSomething = false;
-
-        foreach (Collider hit in hits)
-        {
-            IDamage damageable = hit.GetComponent<IDamage>();
-            if (damageable != null)
-            {
-                damageable.takeDamage(attackDamage);
-                hitSomething = true;
-            }
-        }
-
-        if (hitSomething)
-        {
-            AddLifeSteal(lifeStealPerHit);
-        }
-    }
-    private void AttackUp()
-    {
-        Vector3 attackPos = attackPoint.position + Vector3.up * attackRange;
-
-        Collider[] hits = Physics.OverlapSphere(
-            attackPos,
-            attackRange,
-            enemyLayer
-        );
-
-        DealDamage(hits);
-    }
-
-    private void AttackDown()
-    {
-        Vector3 attackPos = attackPoint.position + Vector3.down * attackRange;
-
-        Collider[] hits = Physics.OverlapSphere(
-            attackPos,
-            attackRange,
-            enemyLayer
-        );
-
-        DealDamage(hits);
-    }
-
-    public void ResetHealth()
-    {
-        HP = HPOrig;
-        updatePlayerUI();
-    }
-
-    public void ResetLifeSteal()
-    {
-        lifeSteal = 0;
-        gamemanager.instance.updateLifeStealUI(lifeSteal, maxLifeSteal);
     }
 }
