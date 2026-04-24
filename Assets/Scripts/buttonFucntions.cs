@@ -24,16 +24,19 @@ public class buttonFunctions : MonoBehaviour
                 Application.Quit();
     #endif
     }
-
-    //public void playerspawn()
-    //{
-    //    gamemanager.instance.playerScript.spawnPlayer();
-    //    gamemanager.instance.stateUnpause();
-    //}
+    public void playerSpawn()
+    {
+        gamemanager.instance.RespawnPlayer();
+    }
 
     public void openAudio()
     {
         gamemanager.instance.openAudio();
+    }
+
+    public void openControl()
+    {
+        gamemanager.instance.openControl();
     }
 
     public void backToPause()
