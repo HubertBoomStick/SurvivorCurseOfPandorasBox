@@ -9,13 +9,11 @@ public class DragonGroundBreathAttack : MonoBehaviour
 
     [Header("Settings")]
     [SerializeField] private int breathDamage = 1;
-    [SerializeField] private float followMoveSpeed = 3f;
     [SerializeField] private float followTurnSpeed = 3f;
 
     private DragonPhaseTwo phase;
-    private bool breathActive;
     private DragonBreath currentBreathInstance;
-    private Transform currentBreathAnchor;
+    private Quaternion prefabLocalRotation;
 
     public void SetPhase(DragonPhaseTwo phaseTwo)
     {
@@ -24,29 +22,26 @@ public class DragonGroundBreathAttack : MonoBehaviour
 
     private void Update()
     {
-        if (!breathActive || currentBreathAnchor == null || phase == null)
+        if (currentBreathInstance == null || firePoint == null || phase == null)
             return;
 
         Transform player = phase.GetPlayer();
 
-        if (firePoint == null || player == null)
+        currentBreathInstance.transform.position = firePoint.position;
+
+        if (player == null)
             return;
 
-        currentBreathAnchor.position = Vector3.MoveTowards(
-            currentBreathAnchor.position,
-            firePoint.position,
-            followMoveSpeed * Time.deltaTime
-        );
-
-        Vector3 dir = player.position - currentBreathAnchor.position;
+        Vector3 dir = player.position - firePoint.position;
+        dir.y += 0.5f;
 
         if (dir.sqrMagnitude <= 0.001f)
             return;
 
-        Quaternion targetRotation = Quaternion.LookRotation(dir.normalized);
+        Quaternion targetRotation = Quaternion.LookRotation(dir.normalized) * prefabLocalRotation;
 
-        currentBreathAnchor.rotation = Quaternion.Slerp(
-            currentBreathAnchor.rotation,
+        currentBreathInstance.transform.rotation = Quaternion.Slerp(
+            currentBreathInstance.transform.rotation,
             targetRotation,
             followTurnSpeed * Time.deltaTime
         );
@@ -68,25 +63,18 @@ public class DragonGroundBreathAttack : MonoBehaviour
 
     public void StartGroundFireBreath()
     {
-        if (phase == null)
-            return;
-
-        Transform player = phase.GetPlayer();
-
-        if (breathPrefab == null || firePoint == null || player == null)
+        if (firePoint == null || breathPrefab == null)
             return;
 
         StopGroundFireBreath();
 
-        GameObject anchorObject = new GameObject("GroundFireBreathAnchor");
-        currentBreathAnchor = anchorObject.transform;
-        currentBreathAnchor.position = firePoint.position;
-        currentBreathAnchor.rotation = firePoint.rotation;
+        currentBreathInstance = Instantiate(breathPrefab, firePoint);
 
-        currentBreathInstance = Instantiate(breathPrefab, currentBreathAnchor);
+        currentBreathInstance.transform.localPosition = Vector3.zero;
+
+        prefabLocalRotation = currentBreathInstance.transform.localRotation;
+
         currentBreathInstance.SetUp(breathDamage, breathHitLayers);
-
-        breathActive = true;
     }
 
     public void FinishGroundFireBreathAttack()
@@ -97,20 +85,12 @@ public class DragonGroundBreathAttack : MonoBehaviour
             phase.NotifyAttackFinished();
     }
 
-    public void StopGroundFireBreath()
+    private void StopGroundFireBreath()
     {
-        breathActive = false;
-
         if (currentBreathInstance != null)
         {
             Destroy(currentBreathInstance.gameObject);
             currentBreathInstance = null;
-        }
-
-        if (currentBreathAnchor != null)
-        {
-            Destroy(currentBreathAnchor.gameObject);
-            currentBreathAnchor = null;
         }
     }
 }

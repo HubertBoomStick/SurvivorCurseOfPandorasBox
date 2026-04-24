@@ -49,35 +49,25 @@ public class DragonGroundSpitAttack : MonoBehaviour
             yield break;
 
         Animator anim = phase.GetBoss().Anim;
-        Transform player = phase.GetPlayer();
-
-        if (anim == null || player == null)
-            yield break;
-
         int totalShots = Random.Range(minShots, maxShots + 1);
 
         for (int i = 0; i < totalShots; i++)
         {
-            if (phase.GetBoss().IsDead || player == null)
-                break;
-
-            shotFired = false;
             canSpawnShot = true;
+            shotFired = false;
 
             anim.ResetTrigger("GroundSpitFire");
             anim.SetTrigger("GroundSpitFire");
 
-            float waitTimer = 0f;
-            float maxWaitForShot = 1.2f;
+            float timer = 0f;
 
-            while (!shotFired && waitTimer < maxWaitForShot)
+            while (!shotFired && timer < 1.2f)
             {
-                waitTimer += Time.deltaTime;
+                timer += Time.deltaTime;
                 yield return null;
             }
 
-            if (i < totalShots - 1)
-                yield return new WaitForSeconds(shotDelay);
+            yield return new WaitForSeconds(shotDelay);
         }
 
         canSpawnShot = false;
@@ -94,18 +84,24 @@ public class DragonGroundSpitAttack : MonoBehaviour
 
         Transform player = phase.GetPlayer();
 
-        if (fireballPrefab == null || firePoint == null || player == null)
+        if (firePoint == null || fireballPrefab == null || player == null)
             return;
 
-        Vector3 dir = (player.position - firePoint.position).normalized;
+        Vector3 direction = player.position - firePoint.position;
+        direction.y += 0.5f;
+
+        if (direction.sqrMagnitude <= 0.001f)
+            direction = firePoint.forward;
+
+        direction.Normalize();
 
         DragonFireball fireball = Instantiate(
             fireballPrefab,
             firePoint.position,
-            Quaternion.LookRotation(dir)
+            Quaternion.LookRotation(direction)
         );
 
-        fireball.SetUp(dir, fireballDamage, fireballSpeed, fireballHitLayers);
+        fireball.SetUp(direction, fireballDamage, fireballSpeed, fireballHitLayers);
 
         shotFired = true;
         canSpawnShot = false;

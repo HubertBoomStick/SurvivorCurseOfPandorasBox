@@ -15,27 +15,24 @@ public class DragonPhaseTwo : MonoBehaviour
     [SerializeField] private float attackCooldown = 3f;
     [SerializeField] private Vector3 facingRotationOffset = new Vector3(0f, 180f, 0f);
 
-    [Header("Distance Ranges")]
-    [SerializeField] private float closeRange = 10f;
-    [SerializeField] private float midRange = 15f;
-    [SerializeField] private float farRange = 20f;
+    [Header("Turning")]
+    [SerializeField] private bool facePlayerWhileAttacking = true;
+    [SerializeField] private float turnSpeed = 12f;
+    [SerializeField] private float faceDeadZone = 1.5f;
 
     [Header("Movement")]
     [SerializeField] private float chaseMoveSpeed = 3f;
     [SerializeField] private float chaseStopDistance = 3f;
-    [SerializeField] private float chaseDuration = 2.5f;
-    [SerializeField] private float lingerMinTime = 3f;
-    [SerializeField] private float lingerMaxTime = 4f;
-    [SerializeField] private float repositionDistance = 2.5f;
-    [SerializeField] private float repositionSpeed = 4f;
-    [SerializeField] private float faceDeadZone = 1.5f;
 
-    [Header("Melee Attack Setup")]
-    [SerializeField] private float bitePreferredRange = 2.8f;
-    [SerializeField] private float clawPreferredRange = 3.2f;
+    [Header("Melee Approach")]
+    [SerializeField] private float biteAttackRange = 2.5f;
+    [SerializeField] private float clawAttackRange = 3f;
     [SerializeField] private float meleeApproachSpeed = 3.5f;
-    [SerializeField] private float meleeRangeTolerance = 0.2f;
     [SerializeField] private float meleeApproachTimeout = 2f;
+
+    [Header("Anti Body Block")]
+    [SerializeField] private float bodyBlockRange = 2.5f;
+    [SerializeField] private float bodyBlockRunCooldown = 2f;
 
     [Header("Ground Check")]
     [SerializeField] private Transform groundCheckPoint;
@@ -47,11 +44,7 @@ public class DragonPhaseTwo : MonoBehaviour
     private bool phaseActive;
     private bool isBusy;
     private float cooldownTimer = Mathf.Infinity;
-
-    private bool isChasingPlayer;
-    private bool isLingering;
-    private float movementStateTimer = 0f;
-
+    private float bodyBlockTimer = Mathf.Infinity;
     private float currentFacingDirection = 1f;
     private Coroutine meleeApproachRoutine;
 
@@ -108,21 +101,40 @@ public class DragonPhaseTwo : MonoBehaviour
             return;
 
         cooldownTimer += Time.deltaTime;
+        bodyBlockTimer += Time.deltaTime;
 
-        if (!isBusy)
+        if (isBusy)
         {
-            UpdateGroundMovement();
-            UpdateFacing();
-            UpdateMoveAnimation();
+            SetMoving(false);
 
-            if (cooldownTimer >= attackCooldown)
-            {
-                ChooseGroundAttack();
-            }
+            if (facePlayerWhileAttacking && (runAttack == null || !runAttack.IsRunning))
+                FacePlayerSmooth();
+
+            return;
         }
-        else
+
+        FacePlayerSmooth();
+
+        if (PlayerInsideDragonBody() && bodyBlockTimer >= bodyBlockRunCooldown)
         {
-            UpdateMoveAnimation();
+            ForceRunAttack();
+            return;
+        }
+
+        float xDistance = player.position.x - transform.position.x;
+        float absDistance = Mathf.Abs(xDistance);
+
+        if (absDistance > chaseStopDistance)
+        {
+            ChasePlayer(xDistance);
+            return;
+        }
+
+        SetMoving(false);
+
+        if (cooldownTimer >= attackCooldown)
+        {
+            ChooseGroundAttack();
         }
     }
 
@@ -131,20 +143,15 @@ public class DragonPhaseTwo : MonoBehaviour
         phaseActive = true;
         isBusy = false;
         cooldownTimer = attackCooldown;
-
-        StartChaseState();
-        UpdateFacing(true);
+        bodyBlockTimer = bodyBlockRunCooldown;
         SetMoving(false);
+        FacePlayerInstant();
     }
 
     public void StopPhase()
     {
         phaseActive = false;
         isBusy = false;
-
-        isChasingPlayer = false;
-        isLingering = false;
-        movementStateTimer = 0f;
 
         if (meleeApproachRoutine != null)
         {
@@ -182,64 +189,8 @@ public class DragonPhaseTwo : MonoBehaviour
         SetMoving(false);
     }
 
-    private void UpdateGroundMovement()
+    private void ChasePlayer(float xDistance)
     {
-        movementStateTimer -= Time.deltaTime;
-
-        if (PlayerInsideBodyRange())
-        {
-            RepositionAwayFromPlayer();
-            return;
-        }
-
-        if (isLingering)
-        {
-            SetMoving(false);
-
-            if (movementStateTimer <= 0f)
-                StartChaseState();
-
-            return;
-        }
-
-        if (isChasingPlayer)
-        {
-            ChasePlayer();
-
-            if (movementStateTimer <= 0f)
-                StartLingerState();
-        }
-        else
-        {
-            StartChaseState();
-        }
-    }
-
-    private void StartChaseState()
-    {
-        isChasingPlayer = true;
-        isLingering = false;
-        movementStateTimer = chaseDuration;
-    }
-
-    private void StartLingerState()
-    {
-        isChasingPlayer = false;
-        isLingering = true;
-        movementStateTimer = Random.Range(lingerMinTime, lingerMaxTime);
-    }
-
-    private void ChasePlayer()
-    {
-        float xDistance = player.position.x - transform.position.x;
-        float absXDistance = Mathf.Abs(xDistance);
-
-        if (absXDistance <= chaseStopDistance)
-        {
-            SetMoving(false);
-            return;
-        }
-
         float moveDirection = xDistance > 0f ? 1f : -1f;
 
         if (!HasGroundAhead(moveDirection))
@@ -248,85 +199,74 @@ public class DragonPhaseTwo : MonoBehaviour
             return;
         }
 
-        Vector3 move = new Vector3(moveDirection * chaseMoveSpeed * Time.deltaTime, 0f, 0f);
-        transform.position += move;
+        transform.position += new Vector3(moveDirection * chaseMoveSpeed * Time.deltaTime, 0f, 0f);
         SetMoving(true);
     }
 
-    private void UpdateFacing(bool force = false)
+    private void FacePlayerSmooth()
     {
         float xDistance = player.position.x - transform.position.x;
 
-        if (force)
-        {
-            currentFacingDirection = xDistance >= 0f ? 1f : -1f;
-        }
-        else
-        {
-            if (xDistance > faceDeadZone)
-                currentFacingDirection = 1f;
-            else if (xDistance < -faceDeadZone)
-                currentFacingDirection = -1f;
-        }
+        if (xDistance > faceDeadZone)
+            currentFacingDirection = 1f;
+        else if (xDistance < -faceDeadZone)
+            currentFacingDirection = -1f;
 
-        FaceDirection(currentFacingDirection);
+        Vector3 flatDir = currentFacingDirection > 0f ? Vector3.right : Vector3.left;
+
+        Quaternion targetRotation =
+            Quaternion.LookRotation(flatDir) * Quaternion.Euler(facingRotationOffset);
+
+        transform.rotation = Quaternion.Slerp(
+            transform.rotation,
+            targetRotation,
+            turnSpeed * Time.deltaTime
+        );
     }
 
-    private void FaceDirection(float direction)
+    private void FacePlayerInstant()
     {
-        Vector3 flatDir = direction > 0f ? Vector3.right : Vector3.left;
-
-        if (flatDir != Vector3.zero)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(flatDir);
-            transform.rotation = targetRotation * Quaternion.Euler(facingRotationOffset);
-        }
-    }
-
-    private bool PlayerInsideBodyRange()
-    {
-        float xDistance = Mathf.Abs(player.position.x - transform.position.x);
-        return xDistance < repositionDistance;
-    }
-
-    private void RepositionAwayFromPlayer()
-    {
-        float directionAway = player.position.x > transform.position.x ? -1f : 1f;
-
-        if (!HasGroundAhead(directionAway))
-        {
-            SetMoving(false);
+        if (player == null)
             return;
-        }
 
-        Vector3 move = new Vector3(directionAway * repositionSpeed * Time.deltaTime, 0f, 0f);
-        transform.position += move;
-        SetMoving(true);
+        float xDistance = player.position.x - transform.position.x;
+        currentFacingDirection = xDistance >= 0f ? 1f : -1f;
+
+        Vector3 flatDir = currentFacingDirection > 0f ? Vector3.right : Vector3.left;
+
+        transform.rotation =
+            Quaternion.LookRotation(flatDir) * Quaternion.Euler(facingRotationOffset);
+    }
+
+    private bool PlayerInsideDragonBody()
+    {
+        if (player == null)
+            return false;
+
+        float xDistance = Mathf.Abs(player.position.x - transform.position.x);
+        return xDistance <= bodyBlockRange;
+    }
+
+    private void ForceRunAttack()
+    {
+        if (runAttack == null)
+            return;
+
+        isBusy = true;
+        cooldownTimer = 0f;
+        bodyBlockTimer = 0f;
+        SetMoving(false);
+
+        runAttack.Execute();
     }
 
     private void ChooseGroundAttack()
     {
-        float distance = Vector3.Distance(transform.position, player.position);
-        int attackIndex;
-
-        if (distance <= closeRange)
-        {
-            // close = Bite and Claw favored, no run
-            attackIndex = GetWeightedAttack(10, 10, 0, 40, 40);
-        }
-        else if (distance <= midRange)
-        {
-            // 15 = FireBreath favored, no bite/claw
-            attackIndex = GetWeightedAttack(25, 55, 20, 0, 0);
-        }
-        else
-        {
-            // 20 or higher = Run + Spit only
-            attackIndex = GetWeightedAttack(55, 0, 45, 0, 0);
-        }
-
         isBusy = true;
         cooldownTimer = 0f;
+        SetMoving(false);
+
+        int attackIndex = Random.Range(0, 5);
 
         switch (attackIndex)
         {
@@ -339,43 +279,31 @@ public class DragonPhaseTwo : MonoBehaviour
                 break;
 
             case 2:
-                if (CanUseRunAttack())
-                    runAttack.Execute();
-                else
-                {
-                    isBusy = false;
-                    cooldownTimer = 0f;
-                }
+                runAttack.Execute();
                 break;
 
             case 3:
-                StartMeleeAttack(bitePreferredRange, true);
+                StartMeleeApproach(true);
                 break;
 
             case 4:
-                StartMeleeAttack(clawPreferredRange, false);
+                StartMeleeApproach(false);
                 break;
         }
     }
 
-    private bool CanUseRunAttack()
-    {
-        float xDistance = player.position.x - transform.position.x;
-        float moveDirection = xDistance > 0f ? 1f : -1f;
-        return HasGroundAhead(moveDirection);
-    }
-
-    private void StartMeleeAttack(float preferredRange, bool useBite)
+    private void StartMeleeApproach(bool useBite)
     {
         if (meleeApproachRoutine != null)
             StopCoroutine(meleeApproachRoutine);
 
-        meleeApproachRoutine = StartCoroutine(MeleeApproachRoutine(preferredRange, useBite));
+        meleeApproachRoutine = StartCoroutine(MeleeApproachRoutine(useBite));
     }
 
-    private IEnumerator MeleeApproachRoutine(float preferredRange, bool useBite)
+    private IEnumerator MeleeApproachRoutine(bool useBite)
     {
         float timer = 0f;
+        float wantedRange = useBite ? biteAttackRange : clawAttackRange;
 
         while (timer < meleeApproachTimeout)
         {
@@ -385,38 +313,20 @@ public class DragonPhaseTwo : MonoBehaviour
             timer += Time.deltaTime;
 
             float xDistance = player.position.x - transform.position.x;
-            float absXDistance = Mathf.Abs(xDistance);
+            float absDistance = Mathf.Abs(xDistance);
 
-            UpdateFacing(true);
+            FacePlayerSmooth();
 
-            if (absXDistance <= preferredRange + meleeRangeTolerance &&
-                absXDistance >= preferredRange - meleeRangeTolerance)
-            {
+            if (absDistance <= wantedRange)
                 break;
-            }
 
             float moveDirection = xDistance > 0f ? 1f : -1f;
 
             if (!HasGroundAhead(moveDirection))
-            {
                 break;
-            }
 
-            if (absXDistance > preferredRange)
-            {
-                transform.position += new Vector3(moveDirection * meleeApproachSpeed * Time.deltaTime, 0f, 0f);
-                SetMoving(true);
-            }
-            else
-            {
-                float backDirection = -moveDirection;
-
-                if (!HasGroundAhead(backDirection))
-                    break;
-
-                transform.position += new Vector3(backDirection * meleeApproachSpeed * Time.deltaTime, 0f, 0f);
-                SetMoving(true);
-            }
+            transform.position += new Vector3(moveDirection * meleeApproachSpeed * Time.deltaTime, 0f, 0f);
+            SetMoving(true);
 
             yield return null;
         }
@@ -448,36 +358,15 @@ public class DragonPhaseTwo : MonoBehaviour
             boss.Anim.SetBool("moving", moving);
     }
 
-    private void UpdateMoveAnimation()
+    public DragonBoss GetBoss()
     {
-        // SetMoving handles the bool updates directly
+        return boss;
     }
 
-    private int GetWeightedAttack(int spit, int breath, int run, int bite, int claw)
+    public Transform GetPlayer()
     {
-        int total = spit + breath + run + bite + claw;
-        int roll = Random.Range(0, total);
-
-        if (roll < spit)
-            return 0;
-        roll -= spit;
-
-        if (roll < breath)
-            return 1;
-        roll -= breath;
-
-        if (roll < run)
-            return 2;
-        roll -= run;
-
-        if (roll < bite)
-            return 3;
-
-        return 4;
+        return player;
     }
-
-    public DragonBoss GetBoss() => boss;
-    public Transform GetPlayer() => player;
 
     private void OnDrawGizmosSelected()
     {
@@ -485,28 +374,13 @@ public class DragonPhaseTwo : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, chaseStopDistance);
 
         Gizmos.color = Color.cyan;
-        Gizmos.DrawWireSphere(transform.position, repositionDistance);
-
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(transform.position, closeRange);
-
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, midRange);
-
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, farRange);
+        Gizmos.DrawWireSphere(transform.position, bodyBlockRange);
 
         Gizmos.color = new Color(1f, 0.5f, 0f);
-        Gizmos.DrawWireSphere(transform.position, bitePreferredRange);
+        Gizmos.DrawWireSphere(transform.position, biteAttackRange);
 
-        Gizmos.color = new Color(1f, 0f, 1f);
-        Gizmos.DrawWireSphere(transform.position, clawPreferredRange);
-
-        if (player != null)
-        {
-            Gizmos.color = Color.magenta;
-            Gizmos.DrawLine(transform.position, player.position);
-        }
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawWireSphere(transform.position, clawAttackRange);
 
         if (groundCheckPoint != null)
         {
