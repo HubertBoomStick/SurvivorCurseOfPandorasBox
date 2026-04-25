@@ -1,0 +1,4 @@
+Begin Object Class=/Script/Engine.Skeleton Name="KRAKEN_Skeleton"
+   BoneTree(190)=()
+   PreviewSkeletalMesh="/Game/Kraken/Meshes/KRAKEN.KRAKEN"
+End Object

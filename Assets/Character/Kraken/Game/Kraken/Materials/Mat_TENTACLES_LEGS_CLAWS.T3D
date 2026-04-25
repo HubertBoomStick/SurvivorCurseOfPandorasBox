@@ -1,0 +1,63 @@
+Begin Object Class=/Script/Engine.Material Name="Mat_TENTACLES_LEGS_CLAWS"
+   Begin Object Class=/Script/Engine.MaterialExpressionTextureSample Name="MaterialExpressionTextureSample_5"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionTextureSample Name="MaterialExpressionTextureSample_6"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionTextureSample Name="MaterialExpressionTextureSample_7"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionTextureSample Name="MaterialExpressionTextureSample_8"
+   End Object
+   Begin Object Class=/Script/UnrealEd.SceneThumbnailInfoWithPrimitive Name="SceneThumbnailInfoWithPrimitive_1"
+   End Object
+   Begin Object Name="MaterialExpressionTextureSample_5"
+      Texture=Texture2D'"/Game/Kraken/Textures/Tex_KRAKEN_LEG_TENTACLE_CLAW_RoughnessMetallicSpecular.Tex_KRAKEN_LEG_TENTACLE_CLAW_RoughnessMetallicSpecular"'
+      MaterialExpressionEditorX=-192
+      MaterialExpressionEditorY=96
+      MaterialExpressionGuid=795D51744CB880EFF1A44F84AF520FDD
+      Material=Material'"Mat_TENTACLES_LEGS_CLAWS"'
+   End Object
+   Begin Object Name="MaterialExpressionTextureSample_6"
+      Texture=Texture2D'"/Game/Kraken/Textures/Tex_KRAKEN_LEG_TENTACLE_CLAW_AO.Tex_KRAKEN_LEG_TENTACLE_CLAW_AO"'
+      MaterialExpressionEditorX=-320
+      MaterialExpressionEditorY=448
+      MaterialExpressionGuid=11E2363246DE42A6D232F3974D840CB7
+      Material=Material'"Mat_TENTACLES_LEGS_CLAWS"'
+   End Object
+   Begin Object Name="MaterialExpressionTextureSample_7"
+      Texture=Texture2D'"/Game/Kraken/Textures/Tex_KRAKEN_LEG_TENTACLE_BaseColor.Tex_KRAKEN_LEG_TENTACLE_BaseColor"'
+      MaterialExpressionEditorX=-160
+      MaterialExpressionEditorY=-96
+      MaterialExpressionGuid=61903D554C7751617BD3C3BA2149F291
+      Material=Material'"Mat_TENTACLES_LEGS_CLAWS"'
+   End Object
+   Begin Object Name="MaterialExpressionTextureSample_8"
+      Texture=Texture2D'"/Game/Kraken/Textures/Tex_KRAKEN_LEG_TENTACLE_CLAW_NRM.Tex_KRAKEN_LEG_TENTACLE_CLAW_NRM"'
+      SamplerType=SAMPLERTYPE_Normal
+      MaterialExpressionEditorX=-176
+      MaterialExpressionEditorY=288
+      MaterialExpressionGuid=2014D34C455AD18DF7E6979788C8CF01
+      Material=Material'"Mat_TENTACLES_LEGS_CLAWS"'
+   End Object
+   Begin Object Name="SceneThumbnailInfoWithPrimitive_1"
+   End Object
+   BaseColor=(Expression=MaterialExpressionTextureSample'"MaterialExpressionTextureSample_7"',Mask=1,MaskR=1,MaskG=1,MaskB=1)
+   Metallic=(Expression=MaterialExpressionTextureSample'"MaterialExpressionTextureSample_5"',OutputIndex=2,Mask=1,MaskG=1)
+   Specular=(Expression=MaterialExpressionTextureSample'"MaterialExpressionTextureSample_5"',OutputIndex=3,Mask=1,MaskB=1)
+   Roughness=(Expression=MaterialExpressionTextureSample'"MaterialExpressionTextureSample_5"',OutputIndex=1,Mask=1,MaskR=1)
+   Normal=(Expression=MaterialExpressionTextureSample'"MaterialExpressionTextureSample_8"',Mask=1,MaskR=1,MaskG=1,MaskB=1)
+   AmbientOcclusion=(Expression=MaterialExpressionTextureSample'"MaterialExpressionTextureSample_6"',Mask=1,MaskR=1,MaskG=1,MaskB=1)
+   bUsedWithSkeletalMesh=True
+   EditorY=96
+   Expressions(0)=MaterialExpressionTextureSample'"MaterialExpressionTextureSample_5"'
+   Expressions(1)=MaterialExpressionTextureSample'"MaterialExpressionTextureSample_6"'
+   Expressions(2)=MaterialExpressionTextureSample'"MaterialExpressionTextureSample_7"'
+   Expressions(3)=MaterialExpressionTextureSample'"MaterialExpressionTextureSample_8"'
+   bCanMaskedBeAssumedOpaque=True
+   StateId=320493D94F01CB5FD38861BD05A9CCE6
+   ReferencedTextureGuids(0)=54654DD940913718298B249E4CB17A29
+   ReferencedTextureGuids(1)=CD1161D5431A7205B3F11AB9F096539E
+   ReferencedTextureGuids(2)=D120DC9843544D7A658FAE888176AA34
+   ReferencedTextureGuids(3)=B959C442467C33B960C83A93A700E946
+   ThumbnailInfo=SceneThumbnailInfoWithPrimitive'"SceneThumbnailInfoWithPrimitive_1"'
+   LightingGuid=124A4EE14F467DD13570DCBEB19F81CE
+End Object

@@ -1,0 +1,63 @@
+Begin Object Class=/Script/Engine.Material Name="Mat_KRAKEN_MAIN_BODY"
+   Begin Object Class=/Script/Engine.MaterialExpressionTextureSample Name="MaterialExpressionTextureSample_0"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionTextureSample Name="MaterialExpressionTextureSample_2"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionTextureSample Name="MaterialExpressionTextureSample_3"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionTextureSample Name="MaterialExpressionTextureSample_4"
+   End Object
+   Begin Object Class=/Script/UnrealEd.SceneThumbnailInfoWithPrimitive Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   Begin Object Name="MaterialExpressionTextureSample_0"
+      Texture=Texture2D'"/Game/Kraken/Textures/Tex_KRAKEN_BODY_BaseColor.Tex_KRAKEN_BODY_BaseColor"'
+      MaterialExpressionEditorX=-208
+      MaterialExpressionEditorY=-192
+      MaterialExpressionGuid=62AC89C64D68F7EC23DA4593C07BC03A
+      Material=Material'"Mat_KRAKEN_MAIN_BODY"'
+   End Object
+   Begin Object Name="MaterialExpressionTextureSample_2"
+      Texture=Texture2D'"/Game/Kraken/Textures/Tex_KRAKEN_BODY_NRM.Tex_KRAKEN_BODY_NRM"'
+      SamplerType=SAMPLERTYPE_Normal
+      MaterialExpressionEditorX=-352
+      MaterialExpressionEditorY=160
+      MaterialExpressionGuid=BB67E2DE4C9A7305DB240C94089D9027
+      Material=Material'"Mat_KRAKEN_MAIN_BODY"'
+   End Object
+   Begin Object Name="MaterialExpressionTextureSample_3"
+      Texture=Texture2D'"/Game/Kraken/Textures/Tex_KRAKEN_BODY_RoughnessMetallicSpecular.Tex_KRAKEN_BODY_RoughnessMetallicSpecular"'
+      MaterialExpressionEditorX=-176
+      MaterialExpressionEditorY=16
+      MaterialExpressionGuid=39A84B0848645C7184BE1FAA2633A422
+      Material=Material'"Mat_KRAKEN_MAIN_BODY"'
+   End Object
+   Begin Object Name="MaterialExpressionTextureSample_4"
+      Texture=Texture2D'"/Game/Kraken/Textures/Tex_KRAKEN_BODY_AO.Tex_KRAKEN_BODY_AO"'
+      MaterialExpressionEditorX=-320
+      MaterialExpressionEditorY=368
+      MaterialExpressionGuid=F8AA3E134E4617F3135850ABC297303F
+      Material=Material'"Mat_KRAKEN_MAIN_BODY"'
+   End Object
+   Begin Object Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   BaseColor=(Expression=MaterialExpressionTextureSample'"MaterialExpressionTextureSample_0"',Mask=1,MaskR=1,MaskG=1,MaskB=1)
+   Metallic=(Expression=MaterialExpressionTextureSample'"MaterialExpressionTextureSample_3"',OutputIndex=2,Mask=1,MaskG=1)
+   Specular=(Expression=MaterialExpressionTextureSample'"MaterialExpressionTextureSample_3"',OutputIndex=3,Mask=1,MaskB=1)
+   Roughness=(Expression=MaterialExpressionTextureSample'"MaterialExpressionTextureSample_3"',OutputIndex=1,Mask=1,MaskR=1)
+   Normal=(Expression=MaterialExpressionTextureSample'"MaterialExpressionTextureSample_2"',Mask=1,MaskR=1,MaskG=1,MaskB=1)
+   AmbientOcclusion=(Expression=MaterialExpressionTextureSample'"MaterialExpressionTextureSample_4"',Mask=1,MaskR=1,MaskG=1,MaskB=1)
+   bUsedWithSkeletalMesh=True
+   EditorY=16
+   Expressions(0)=MaterialExpressionTextureSample'"MaterialExpressionTextureSample_0"'
+   Expressions(1)=MaterialExpressionTextureSample'"MaterialExpressionTextureSample_2"'
+   Expressions(2)=MaterialExpressionTextureSample'"MaterialExpressionTextureSample_3"'
+   Expressions(3)=MaterialExpressionTextureSample'"MaterialExpressionTextureSample_4"'
+   bCanMaskedBeAssumedOpaque=True
+   StateId=F4B3FBED4AC0E51456C65E8CD53D3431
+   ReferencedTextureGuids(0)=01D7369841FDABFE30A5CBAC94985FE6
+   ReferencedTextureGuids(1)=2FD26E2D43B29CDA4CE22BBB64E285C0
+   ReferencedTextureGuids(2)=51E73D5E47E5384F43A4B387751BB160
+   ReferencedTextureGuids(3)=84BBE13B496AD37F2AD8B6A8B7788C02
+   ThumbnailInfo=SceneThumbnailInfoWithPrimitive'"SceneThumbnailInfoWithPrimitive_0"'
+   LightingGuid=95F794484AC95732A5ACC38D632236B0
+End Object
