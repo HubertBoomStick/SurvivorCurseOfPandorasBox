@@ -3271,7 +3271,7 @@ MonoBehaviour:
   menuWin: {fileID: 3782429007732078149}
   menuLose: {fileID: 5785189906136068288}
   menuAudio: {fileID: 225343939868139367}
-  menuControl: {fileID: 8766761656787009215}
+  menuControl: {fileID: 0}
   playerHPbar: {fileID: 7561522696580214145}
   lifeStealBar: {fileID: 8303522514538401914}
   player: {fileID: 0}
