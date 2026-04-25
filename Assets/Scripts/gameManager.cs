@@ -14,6 +14,7 @@ public class gamemanager : MonoBehaviour
     [SerializeField] GameObject menuLose;
     [SerializeField] GameObject menuAudio;
     [SerializeField] GameObject menuControl;
+    [SerializeField] GameObject credits;
 
 
     public Image playerHPbar;
@@ -142,6 +143,15 @@ public class gamemanager : MonoBehaviour
         menuControl.SetActive(true);
     }
 
+    public void openCredits()
+    {
+        if (menuActive != null)
+            menuActive.SetActive(false);
+
+        menuActive = credits;
+        credits.SetActive(true);
+    }
+
     public void backToPause()
     {
         if (menuActive != null)
@@ -149,6 +159,15 @@ public class gamemanager : MonoBehaviour
 
         menuActive = menuPause;
         menuPause.SetActive(true);
+    }
+
+    public void backToStart()
+    {
+        if (menuActive != null)
+            menuActive.SetActive(false);
+
+        menuActive = menuStart;
+        menuStart.SetActive(true);
     }
 
     public void updateLifeStealUI(int current, int max)

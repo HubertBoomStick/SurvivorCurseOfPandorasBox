@@ -39,6 +39,15 @@ public class buttonFunctions : MonoBehaviour
         gamemanager.instance.openControl();
     }
 
+    public void openCredits()
+    {
+        gamemanager.instance.openCredits();
+    }
+
+    public void backToStart()
+    {
+        gamemanager.instance.backToStart();
+    }
     public void backToPause()
     {
         gamemanager.instance.backToPause();
