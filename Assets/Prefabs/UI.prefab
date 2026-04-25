@@ -3271,7 +3271,7 @@ MonoBehaviour:
   menuWin: {fileID: 3782429007732078149}
   menuLose: {fileID: 5785189906136068288}
   menuAudio: {fileID: 225343939868139367}
-  menucontrol: {fileID: 0}
+  menuControl: {fileID: 0}
   playerHPbar: {fileID: 7561522696580214145}
   lifeStealBar: {fileID: 8303522514538401914}
   player: {fileID: 0}
@@ -10254,7 +10254,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &663719675120998071
 RectTransform:
   m_ObjectHideFlags: 0
