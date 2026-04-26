@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3949917804584179586}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_126
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -41,7 +41,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1880848294183715137}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_LEG_L_A_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -73,7 +73,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4108715768197300639}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_063
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -104,7 +104,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4539488146730843324}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_LEG_L_A_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -136,7 +136,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 423371460917865526}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_024
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -168,7 +168,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3593499776140687979}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_LEG_R_B_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -199,7 +199,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5052504035142026537}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_084
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -231,7 +231,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1825427561601768925}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_104
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -263,7 +263,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5916947944704106392}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_TENTACLE_BASE_G_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -295,7 +295,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1803020562095104222}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_121
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -327,7 +327,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7246030666750584719}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_006
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -359,7 +359,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3999428273718686408}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_SHELL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -410,7 +410,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 614089320063275175}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_070
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -442,7 +442,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5007119664902153152}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_TENTACLE_BASE_H_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -474,7 +474,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2548147881487311309}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_LEG_R_C_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -506,7 +506,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1308603463232337342}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_033
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -538,7 +538,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4034019888658497113}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_TENTACLE_BASE_F_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -571,7 +571,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8962177600118440513}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_FOREARM_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -603,9 +603,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6552563531423282954}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Tentacle
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -619,11 +619,12 @@ Transform:
   m_GameObject: {fileID: 843185478384291108}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -156.86, y: -2.93, z: -9.83}
+  m_LocalPosition: {x: -156.86, y: -2.93, z: -13}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7129851668853094562}
+  - {fileID: 6050295051084828306}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &844445542489894485
@@ -635,7 +636,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7473642970970620689}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_TENTACLE_BASE_D_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -668,7 +669,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5364400131525831442}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_TENTACLE_BASE_A_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -700,7 +701,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7611447060324399070}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_011
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -732,7 +733,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7513996680669238538}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_009
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -764,7 +765,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7129851668853094562}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -780,7 +781,7 @@ Transform:
   m_GameObject: {fileID: 957229008891828758}
   serializedVersion: 2
   m_LocalRotation: {x: 0.69963783, y: 0.10250329, z: 0.10250332, w: 0.69963783}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -5, z: -3}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -798,7 +799,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 642733376325957461}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_118
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -830,7 +831,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7039355152995046112}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -862,7 +863,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3513720141268479746}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_045
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -894,7 +895,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6202690618060678476}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_115
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -926,7 +927,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 817072505398951954}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_092
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -958,7 +959,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1474942991092109670}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_065
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -990,7 +991,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3790743761276776436}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_102
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1022,7 +1023,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 286193928938806744}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_103
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1054,7 +1055,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5969715964335776843}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_TENTACLE_BASE_D_nub
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1085,7 +1086,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3152561803773661815}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_122
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1117,7 +1118,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2097105725122714479}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_BEAK_LOWER
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1148,7 +1149,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4842219901803132648}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Dummy019
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1180,7 +1181,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4648067651887982174}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_055
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1212,7 +1213,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1028674185008724431}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_027
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1244,7 +1245,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2531323261846910114}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_ARM_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1276,7 +1277,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3983660505500233451}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_095
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1307,7 +1308,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2079324413466816681}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_LEG_R_B_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1339,7 +1340,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8798253262391657341}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_LEG_R_C_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1371,7 +1372,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8376317934748436896}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_054
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1403,7 +1404,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 571263818369478770}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_068
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1435,7 +1436,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5360482315788241342}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_090
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1467,7 +1468,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8488624789173654365}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_ARM_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1499,7 +1500,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6522224728452631700}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_040
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1531,7 +1532,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2653628180898209239}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_019
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1563,7 +1564,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9071522650239063658}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_079
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1594,7 +1595,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3526872833604845344}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_038
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1626,7 +1627,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4380883723377654020}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_094
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1658,7 +1659,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8207081343619537454}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Dummy006
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1690,7 +1691,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3120205146715876272}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_120
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1713,6 +1714,116 @@ Transform:
   - {fileID: 1803020562095104222}
   m_Father: {fileID: 6467822662246616707}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2373277366285539716
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6050295051084828306}
+  - component: {fileID: 3745478363340665242}
+  - component: {fileID: 7904950648683877989}
+  - component: {fileID: 5806193606108068880}
+  m_Layer: 8
+  m_Name: HitBox
+  m_TagString: Enemy
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6050295051084828306
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2373277366285539716}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.13, y: 0, z: -0.457}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6552563531423282954}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &3745478363340665242
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2373277366285539716}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 7.560399
+  m_Direction: 1
+  m_Center: {x: 0, y: 1.585465, z: 0}
+--- !u!54 &7904950648683877989
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2373277366285539716}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!114 &5806193606108068880
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2373277366285539716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0592b06762bd0a245b9935aaddd33344, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KrakenTentaclePillar
+  maxHealth: 5
+  lifeTime: 5
+  riseDistance: 8
+  riseTime: 0.35
+  damage: 1
+  playerTag: Player
+  knockbackForce: 12
+  upwardForce: 2
+  tentacleRenderer: {fileID: 9186091303494231902}
+  hitColor: {r: 1, g: 0, b: 0, a: 1}
+  flashTime: 0.12
+  sinkRoot: {fileID: 6552563531423282954}
+  sinkDistance: 8
+  sinkTime: 1
 --- !u!1 &2406790473134601745
 GameObject:
   m_ObjectHideFlags: 0
@@ -1723,7 +1834,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4893499891337145553}
   - component: {fileID: 9186091303494231902}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2005,7 +2116,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 616450587889269023}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_109
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2037,7 +2148,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2749209124783033755}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_114
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2069,7 +2180,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8221192758176966506}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_088
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2101,7 +2212,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 752364590991183591}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_LEG_L_B_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2133,7 +2244,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7052885036655734930}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_013
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2165,7 +2276,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5022074937573481589}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_CLAW_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2197,7 +2308,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5961225937664705829}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_018
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2229,7 +2340,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1274802289694151753}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_TENTACLE_BASE_G_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2261,7 +2372,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1949855698300173122}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Dummy011
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2293,7 +2404,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5810069629616750594}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Dummy020
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2325,7 +2436,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3246348876467950725}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_LEG_L_C_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2356,7 +2467,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7339970169274098370}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_060
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2388,7 +2499,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5126721584860846984}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_023
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2420,7 +2531,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1496495386625327539}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_CLAW_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2452,7 +2563,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 447058183640715614}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_026
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2484,7 +2595,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3713340756350947768}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_049
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2516,7 +2627,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8609573874075562054}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_034
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2548,7 +2659,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1229059280372428634}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_LEG_R_A_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2580,7 +2691,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6396159540255982633}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_091
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2612,7 +2723,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2284480067222703314}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_LEG_L_A_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2643,7 +2754,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3609906709576114624}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_127
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2674,7 +2785,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5146994521809103867}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_125
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2706,7 +2817,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2456405975651529971}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_116
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2738,7 +2849,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1541123553703788271}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_TENTACLE_BASE_C_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2770,7 +2881,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4629801393152672545}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_043
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2802,7 +2913,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7607359354864284743}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_014
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2834,7 +2945,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1381614140632012776}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_061
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2866,7 +2977,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7971927173973358972}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_TENTACLE_BASE_F_nub
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2897,7 +3008,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2438016518945282552}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_072
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2929,7 +3040,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9199611032172722923}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_081
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2961,7 +3072,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5820845103483561065}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_108
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2993,7 +3104,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5218480445059450931}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_052
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3025,7 +3136,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6772585332954610768}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_099
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3057,7 +3168,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1918414684858141185}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_076
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3089,7 +3200,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8675521417360959846}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_TENTACLE_BASE_B_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3121,7 +3232,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6785342077540728425}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_066
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3153,7 +3264,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4462181063096570743}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_077
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3185,7 +3296,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3985655002212843605}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Dummy004
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3217,7 +3328,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4920603400161179619}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_069
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3249,7 +3360,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1082460028041087617}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_056
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3281,7 +3392,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8179068024350129523}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_015
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3312,7 +3423,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1645445779090253489}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_078
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3344,7 +3455,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7965741297442326035}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_057
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3376,7 +3487,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5322815807916921587}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_107
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3408,7 +3519,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5940654477820346194}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Dummy013
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3440,7 +3551,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8213329891774109267}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_TENTACLE_BASE_A_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3472,7 +3583,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1215986948501067925}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Dummy014
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3504,7 +3615,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1998427184052818418}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_THUMB_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3535,7 +3646,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5644864042208527695}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_LEG_L_B_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3567,7 +3678,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 849571793473094607}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_BEAK_UPPER
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3598,7 +3709,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2788664560114725188}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_031
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3629,7 +3740,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4047353608334670451}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_039
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3661,7 +3772,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8850001757256421741}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_093
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3693,7 +3804,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2233721377035401088}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_110
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3725,7 +3836,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5208598324812199874}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_067
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3757,7 +3868,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4051013316341840640}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_LEG_R_B_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3789,7 +3900,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1449307911418522164}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_LEG_L_C_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3821,7 +3932,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7786922885516675870}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_097
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3853,7 +3964,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2297963918761794605}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_LEG_R_C_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3885,7 +3996,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6085157983804232538}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_037
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3917,7 +4028,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5314151178417641994}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_044
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3949,7 +4060,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8306746173743984431}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_LEG_L_C_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3981,7 +4092,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1799377085038084474}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4013,7 +4124,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6597196201653378089}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_113
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4045,7 +4156,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4314588364468107361}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_117
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4077,7 +4188,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7075009005714172183}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_029
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4109,7 +4220,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3246746821447252710}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_010
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4141,7 +4252,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6833866355267363371}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_TENTACLE_BASE_F_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4173,7 +4284,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6580321820485269891}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_LEG_R_B_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4205,7 +4316,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7726399928508194584}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_BEAK_LEFT
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4236,7 +4347,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1190402374461462774}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_THUMB_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4267,7 +4378,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1796819028560594873}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_030
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4299,7 +4410,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4220116911336051654}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_100
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4331,7 +4442,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3998970391723660644}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_TENTACLE_BASE_C_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4363,7 +4474,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8632656817826594367}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_LEG_R_A_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4395,7 +4506,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9034969697497299033}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_008
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4427,7 +4538,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 911162070125257096}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_021
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4459,7 +4570,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1092260455765140536}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_LEG_R_A_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4491,7 +4602,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1610349366202493217}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4523,7 +4634,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4030293416580294729}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_124
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4555,7 +4666,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6197378178855077589}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_074
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4587,7 +4698,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6515165302134671521}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_LEG_L_B_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4618,7 +4729,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5148143603168634386}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_086
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4650,7 +4761,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7566989255030013723}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_012
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4682,7 +4793,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 790680194798227684}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_082
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4714,7 +4825,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8809653976536374421}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4746,7 +4857,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7665655876676296065}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_025
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4778,7 +4889,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2294894186562657560}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Dummy003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4810,7 +4921,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4527734505035811421}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_042
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4842,7 +4953,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5707245636362007745}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_BEAK_RIGHT
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4873,7 +4984,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4301801404862849541}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_FOREARM_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4905,7 +5016,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 14984900910342631}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_LEG_L_B_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4937,7 +5048,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6799006698867929614}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_083
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4969,7 +5080,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2577214992936226603}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_004
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5001,7 +5112,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1418492165951134484}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_046
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5033,7 +5144,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3901651902993737875}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Dummy018
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5065,7 +5176,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6375337884186609537}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_106
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5097,7 +5208,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2344364191806671713}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_TENTACLE_BASE_B_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5128,7 +5239,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4545714773928128606}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_005
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5160,7 +5271,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5512451370436256353}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_073
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5192,7 +5303,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3066228995871217863}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_007
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5224,7 +5335,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 455063988395067700}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_111
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5255,7 +5366,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5785977934004656765}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_020
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5287,7 +5398,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8852324097143710735}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Dummy005
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5319,7 +5430,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1113525553116216792}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Dummy002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5351,7 +5462,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8865738515095816557}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_041
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5383,7 +5494,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6754563525515474478}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_085
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5415,7 +5526,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 869086496825695283}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Dummy012
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5447,7 +5558,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1783562037811475500}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_058
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5479,7 +5590,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3963826772128075084}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_TENTACLE_BASE_H_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5511,7 +5622,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2280205849921804530}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_101
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5543,7 +5654,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6232895566300851538}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_053
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5575,7 +5686,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7401483147283595198}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_089
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5607,7 +5718,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5588972675650223006}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_098
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5639,7 +5750,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6467822662246616707}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_119
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5671,7 +5782,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7033389197552821310}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_LEG_L_C_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5703,7 +5814,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2900304183772832563}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_TENTACLE_BASE_D_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5735,7 +5846,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 720506418740039455}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_TENTACLE_BASE_E_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5767,7 +5878,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8933058524114437301}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_047
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5798,7 +5909,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8802060228345380634}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Dummy001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5830,7 +5941,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3419875530225529706}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_105
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5862,7 +5973,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1176716868740123461}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_028
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5894,7 +6005,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8127755810421355129}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_059
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5926,7 +6037,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7494904304388269221}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_087
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5958,7 +6069,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1841205497370802073}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_036
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5990,7 +6101,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5745257840874128783}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_022
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6022,7 +6133,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4966400162296220777}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_LEG_R_C_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6053,7 +6164,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2877213423988532157}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_123
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6085,7 +6196,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2579480949772188212}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_051
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6117,7 +6228,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4485098742536422536}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_LEG_L_A_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6149,7 +6260,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1134254468752760290}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_075
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6181,7 +6292,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4922811481480581574}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_LEG_L_R_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6212,7 +6323,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5870119373320915839}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_050
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6244,7 +6355,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 307493234202383255}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: KRAKEN_TENTACLE_BASE_E_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6276,7 +6387,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8845888844716251630}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_062
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6308,7 +6419,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6738504076376471867}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_017
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6340,7 +6451,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7735378534383554223}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_071
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6372,7 +6483,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4660390523978028014}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: S2B_SplineIK_035
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6404,7 +6515,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1539688039007911019}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Dummy021
   m_TagString: Untagged
   m_Icon: {fileID: 0}
