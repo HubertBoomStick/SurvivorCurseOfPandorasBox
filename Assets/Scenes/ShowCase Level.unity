@@ -1670,10 +1670,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 713093593251565887, guid: 507aee8b219a2b440a08e23356a46b30, type: 3}
-      propertyPath: m_Avatar
-      value: 
-      objectReference: {fileID: 9000000, guid: f1f26a7131bf25444a8bcd5ceafa5a97, type: 3}
     - target: {fileID: 1910769704745395366, guid: 507aee8b219a2b440a08e23356a46b30, type: 3}
       propertyPath: player
       value: 
@@ -1710,14 +1706,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: KRAKEN
       objectReference: {fileID: 0}
-    - target: {fileID: 4786651390289879050, guid: 507aee8b219a2b440a08e23356a46b30, type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: -6564988494530931548, guid: f1f26a7131bf25444a8bcd5ceafa5a97, type: 3}
-    - target: {fileID: 4786651390289879050, guid: 507aee8b219a2b440a08e23356a46b30, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 4040d1ca098175f43bea8d5d4b6780d8, type: 2}
     - target: {fileID: 7992686545902022301, guid: 507aee8b219a2b440a08e23356a46b30, type: 3}
       propertyPath: m_LocalPosition.x
       value: -163.15
