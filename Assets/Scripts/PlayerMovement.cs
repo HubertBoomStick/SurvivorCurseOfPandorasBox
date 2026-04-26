@@ -34,7 +34,7 @@ public class PlayerMovement : MonoBehaviour, IDamage
 
     [Header("Slide")]
     [SerializeField] private float slideSpeed = 12f;
-    [SerializeField] private float slideDuration = 3f;
+    [SerializeField] private float slideDuration = 0.8f;
 
     [Header("Double Jump")]
     [SerializeField] private int maxJumps = 2;
@@ -44,7 +44,7 @@ public class PlayerMovement : MonoBehaviour, IDamage
     [SerializeField] private LayerMask wallLayer;
     [SerializeField] private Vector2 wallJumpForce = new Vector2(5f, 7f);
 
-    [Header("Wall Slide")]
+    [Header("Wall Slide / Hang")]
     [SerializeField] private float wallSlideSpeed = 2f;
 
     [Header("Dash")]
@@ -66,9 +66,10 @@ public class PlayerMovement : MonoBehaviour, IDamage
     [SerializeField] private Transform attackPoint;
     [SerializeField] private LayerMask enemyLayer;
 
-    private Rigidbody rb;
-    private Animator animator;
+    [Header("Animation")]
+    [SerializeField] private Animator animator;
 
+    private Rigidbody rb;
     private Vector3 originalScale;
 
     private int jumpsLeft;
@@ -92,26 +93,34 @@ public class PlayerMovement : MonoBehaviour, IDamage
     private float jumpTimer;
     private float moveInput;
 
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+
+        if (animator == null)
+            animator = GetComponentInChildren<Animator>();
+
+        if (animator != null)
+            animator.applyRootMotion = false;
+    }
+
     private void Start()
     {
         HPOrig = HP;
         updatePlayerUI();
-        originalScale = transform.localScale;
-        gamemanager.instance.updateLifeStealUI(lifeSteal, maxLifeSteal);
-    }
 
-    private void Awake()
-    {
-        rb = GetComponent<Rigidbody>();
-        animator = GetComponentInChildren<Animator>();
+        originalScale = transform.localScale;
+        jumpsLeft = maxJumps;
+
+        gamemanager.instance.updateLifeStealUI(lifeSteal, maxLifeSteal);
     }
 
     private void Update()
     {
-        // knockback timer
         if (isKnockedBack)
         {
             knockbackTimer -= Time.deltaTime;
+
             if (knockbackTimer <= 0f)
                 isKnockedBack = false;
         }
@@ -124,9 +133,8 @@ public class PlayerMovement : MonoBehaviour, IDamage
 
         if (!isKnockedBack)
         {
-            isSprinting = Input.GetKey(sprintKey) && isGrounded;
+            isSprinting = Input.GetKey(sprintKey) && isGrounded && !isCrouching && !isSliding;
 
-            // Jump
             if (Input.GetKeyDown(KeyCode.Space) && !isSliding)
             {
                 if (isTouchingWall && !isGrounded)
@@ -139,25 +147,21 @@ public class PlayerMovement : MonoBehaviour, IDamage
                     jumpsLeft--;
                 }
 
-                // Float after second jump
                 if (!isGrounded && jumpsLeft == 0 && Input.GetKey(KeyCode.Space) && rb.linearVelocity.y < 0)
                     isFloating = true;
                 else
                     isFloating = false;
             }
 
-            // life steal bar
             if (Input.GetKeyDown(KeyCode.E) && lifeSteal >= maxLifeSteal)
             {
                 HealFull();
             }
 
-            // Attack cooldown
             if (attackTimer > 0)
                 attackTimer -= Time.deltaTime;
 
-            // Attack input
-            if (Input.GetMouseButtonDown(0) && attackTimer <= 0)
+            if (Input.GetMouseButtonDown(0) && attackTimer <= 0 && !isSliding)
             {
                 bool holdingW = Input.GetKey(KeyCode.W);
                 bool holdingS = Input.GetKey(KeyCode.S);
@@ -172,16 +176,11 @@ public class PlayerMovement : MonoBehaviour, IDamage
                 attackTimer = attackCooldown;
             }
 
-            // Rotate
-            if (moveInput > 0)
-                transform.rotation = Quaternion.Euler(0f, 90f, 0f);
-            else if (moveInput < 0)
-                transform.rotation = Quaternion.Euler(0f, -90f, 0f);
+            HandleFacingDirection();
 
-            // Slide or crouch
             if (Input.GetKeyDown(crouchKey))
             {
-                if (isSprinting && isGrounded && !isSliding)
+                if (Input.GetKey(sprintKey) && isGrounded && !isSliding)
                     StartSlide();
                 else
                     StartCrouch();
@@ -190,7 +189,6 @@ public class PlayerMovement : MonoBehaviour, IDamage
             if (Input.GetKeyUp(crouchKey) && !isSliding)
                 StopCrouch();
 
-            // Dash
             if (Input.GetKeyDown(dashKey) && dashCooldownTimer <= 0 && !isSliding)
             {
                 StartDash();
@@ -202,16 +200,17 @@ public class PlayerMovement : MonoBehaviour, IDamage
             if (isDashing)
             {
                 dashTimer -= Time.deltaTime;
+
                 if (dashTimer <= 0)
                     StopDash();
             }
         }
 
-        // Slide timer
         if (isSliding)
         {
             slideTimer -= Time.deltaTime;
-            if (slideTimer <= 0)
+
+            if (slideTimer <= 0f)
                 StopSlide();
         }
     }
@@ -252,7 +251,9 @@ public class PlayerMovement : MonoBehaviour, IDamage
         float currentSpeed = moveSpeed;
 
         if (isSliding)
+        {
             currentSpeed = slideSpeed;
+        }
         else
         {
             if (isSprinting)
@@ -267,6 +268,14 @@ public class PlayerMovement : MonoBehaviour, IDamage
         rb.linearVelocity = velocity;
     }
 
+    private void HandleFacingDirection()
+    {
+        if (moveInput > 0)
+            transform.rotation = Quaternion.Euler(0f, 90f, 0f);
+        else if (moveInput < 0)
+            transform.rotation = Quaternion.Euler(0f, -90f, 0f);
+    }
+
     private void Jump()
     {
         Vector3 velocity = rb.linearVelocity;
@@ -276,8 +285,7 @@ public class PlayerMovement : MonoBehaviour, IDamage
         isGrounded = false;
         jumpTimer = 0f;
 
-        if (animator != null)
-            animator.SetBool("IsJump", true);
+        TriggerAnim("Jump");
     }
 
     private void CheckGround()
@@ -291,10 +299,10 @@ public class PlayerMovement : MonoBehaviour, IDamage
         isGrounded = Physics.CheckSphere(feetPosition.position, groundCheckRadius, groundLayer);
 
         if (isGrounded)
+        {
             jumpsLeft = maxJumps;
-
-        if (isGrounded && animator != null)
-            animator.SetBool("IsJump", false);
+            isFloating = false;
+        }
     }
 
     private void CheckWall()
@@ -303,7 +311,6 @@ public class PlayerMovement : MonoBehaviour, IDamage
             Physics.Raycast(transform.position, Vector3.right, wallCheckDistance, wallLayer) ||
             Physics.Raycast(transform.position, Vector3.left, wallCheckDistance, wallLayer);
 
-        // Give one jump when first touching wall
         if (touchingWallNow && !wasTouchingWall)
         {
             if (jumpsLeft < 1)
@@ -327,6 +334,8 @@ public class PlayerMovement : MonoBehaviour, IDamage
         );
 
         jumpsLeft = maxJumps - 1;
+
+        TriggerAnim("Jump");
     }
 
     private void StartCrouch()
@@ -345,21 +354,166 @@ public class PlayerMovement : MonoBehaviour, IDamage
     {
         isSliding = true;
         slideTimer = slideDuration;
+
         StartCrouch();
+        TriggerAnim("Slide");
     }
 
     private void StopSlide()
     {
         isSliding = false;
         StopCrouch();
+
+        rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, rb.linearVelocity.z);
+    }
+
+    private void StartDash()
+    {
+        isDashing = true;
+        dashTimer = dashDuration;
+        dashCooldownTimer = dashCooldown;
+
+        float direction = transform.eulerAngles.y > 180f ? -1f : 1f;
+
+        rb.linearVelocity = new Vector3(
+            dashForce * direction,
+            0f,
+            0f
+        );
+    }
+
+    private void StopDash()
+    {
+        isDashing = false;
     }
 
     private void UpdateAnimations()
     {
         if (animator == null) return;
 
-        bool isRunning = Mathf.Abs(rb.linearVelocity.x) > 0.1f && isGrounded && !isSliding;
-        animator.SetBool("IsRun", isRunning);
+        bool running = Mathf.Abs(rb.linearVelocity.x) > 0.1f && isGrounded && !isSliding && !isCrouching;
+        bool falling = !isGrounded && rb.linearVelocity.y < -0.1f;
+        bool hanging = isWallSliding;
+        bool crouching = isCrouching && !isSliding;
+        bool crouchWalking = isCrouching && Mathf.Abs(rb.linearVelocity.x) > 0.1f && isGrounded && !isSliding;
+        bool sliding = isSliding;
+
+        animator.SetBool("IsRun", running);
+        animator.SetBool("IsFalling", falling);
+        animator.SetBool("IsWallHang", hanging);
+        animator.SetBool("IsCrouch", crouching);
+        animator.SetBool("IsCrouchWalk", crouchWalking);
+        animator.SetBool("IsSlide", sliding);
+        animator.SetBool("IsGrounded", isGrounded);
+    }
+
+    private void TriggerAnim(string triggerName)
+    {
+        if (animator == null) return;
+
+        animator.ResetTrigger("Jump");
+        animator.ResetTrigger("Slide");
+        animator.ResetTrigger("Attack");
+        animator.ResetTrigger("AttackUp");
+        animator.ResetTrigger("AttackDown");
+        animator.ResetTrigger("RunAttack");
+        animator.ResetTrigger("Heal");
+
+        animator.SetTrigger(triggerName);
+    }
+
+    private void Attack()
+    {
+        bool runningAttack = Mathf.Abs(rb.linearVelocity.x) > 0.1f && isGrounded && !isCrouching && !isSliding;
+
+        if (runningAttack)
+            TriggerAnim("RunAttack");
+        else
+            TriggerAnim("Attack");
+
+        Collider[] hits = Physics.OverlapSphere(
+            attackPoint.position,
+            attackRange,
+            enemyLayer
+        );
+
+        DealDamage(hits);
+    }
+
+    private void AttackUp()
+    {
+        TriggerAnim("AttackUp");
+
+        Vector3 attackPos = attackPoint.position + Vector3.up * attackRange;
+
+        Collider[] hits = Physics.OverlapSphere(
+            attackPos,
+            attackRange,
+            enemyLayer
+        );
+
+        DealDamage(hits);
+    }
+
+    private void AttackDown()
+    {
+        TriggerAnim("AttackDown");
+
+        Vector3 attackPos = attackPoint.position + Vector3.down * attackRange;
+
+        Collider[] hits = Physics.OverlapSphere(
+            attackPos,
+            attackRange,
+            enemyLayer
+        );
+
+        DealDamage(hits);
+    }
+
+    private void DealDamage(Collider[] hits)
+    {
+        bool hitSomething = false;
+
+        foreach (Collider hit in hits)
+        {
+            IDamage damageable = hit.GetComponent<IDamage>();
+
+            if (damageable == null)
+                damageable = hit.GetComponentInParent<IDamage>();
+
+            if (damageable == null)
+                damageable = hit.GetComponentInChildren<IDamage>();
+
+            if (damageable != null)
+            {
+                damageable.takeDamage(attackDamage);
+                hitSomething = true;
+            }
+        }
+
+        if (hitSomething)
+            AddLifeSteal(lifeStealPerHit);
+    }
+
+    private void AddLifeSteal(int amount)
+    {
+        lifeSteal += amount;
+
+        if (lifeSteal > maxLifeSteal)
+            lifeSteal = maxLifeSteal;
+
+        gamemanager.instance.updateLifeStealUI(lifeSteal, maxLifeSteal);
+    }
+
+    private void HealFull()
+    {
+        HP = HPOrig;
+        updatePlayerUI();
+
+        lifeSteal = 0;
+        gamemanager.instance.updateLifeStealUI(lifeSteal, maxLifeSteal);
+
+        TriggerAnim("Heal");
     }
 
     public void ApplyKnockback(Vector3 force)
@@ -385,114 +539,6 @@ public class PlayerMovement : MonoBehaviour, IDamage
         gamemanager.instance.playerHPbar.fillAmount = (float)HP / HPOrig;
     }
 
-    private void StartDash()
-    {
-        isDashing = true;
-        dashTimer = dashDuration;
-        dashCooldownTimer = dashCooldown;
-
-        float direction = transform.eulerAngles.y > 180f ? -1f : 1f;
-
-        rb.linearVelocity = new Vector3(
-            dashForce * direction,
-            0f,
-            0f
-        );
-    }
-
-    private void StopDash()
-    {
-        isDashing = false;
-    }
-    private void Attack()
-    {
-        Collider[] hits = Physics.OverlapSphere(
-            attackPoint.position,
-            attackRange,
-            enemyLayer
-        );
-
-        DealDamage(hits);
-    }
-    private void OnDrawGizmosSelected()
-    {
-        if (attackPoint == null) return;
-
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(attackPoint.position, attackRange);
-    }
-
-    private void AddLifeSteal(int amount)
-    {
-        lifeSteal += amount;
-
-        if (lifeSteal > maxLifeSteal)
-            lifeSteal = maxLifeSteal;
-
-        gamemanager.instance.updateLifeStealUI(lifeSteal, maxLifeSteal);
-    }
-
-    private void HealFull()
-    {
-        HP = HPOrig;
-        updatePlayerUI();
-
-        lifeSteal = 0;
-        gamemanager.instance.updateLifeStealUI(lifeSteal, maxLifeSteal);
-    }
-
-    private void DealDamage(Collider[] hits)
-    {
-        bool hitSomething = false;
-
-        foreach (Collider hit in hits)
-        {
-            IDamage damageable = hit.GetComponent<IDamage>();
-
-            if (damageable == null)
-                damageable = hit.GetComponentInParent<IDamage>();
-
-            if (damageable == null)
-                damageable = hit.GetComponentInChildren<IDamage>();
-
-            if (damageable != null)
-            {
-                damageable.takeDamage(attackDamage);
-                hitSomething = true;
-            }
-        }
-
-        if (hitSomething)
-        {
-            AddLifeSteal(lifeStealPerHit);
-        }
-    }
-    private void AttackUp()
-    {
-        Vector3 attackPos = attackPoint.position + Vector3.up * attackRange;
-
-        Collider[] hits = Physics.OverlapSphere(
-            attackPos,
-            attackRange,
-            enemyLayer
-        );
-
-        DealDamage(hits);
-    }
-
-    private void AttackDown()
-    {
-        Vector3 attackPos = attackPoint.position + Vector3.down * attackRange;
-
-        Collider[] hits = Physics.OverlapSphere(
-            attackPos,
-            attackRange,
-            enemyLayer
-        );
-
-        DealDamage(hits);
-    }
-
     public void ResetHealth()
     {
         HP = HPOrig;
@@ -503,5 +549,13 @@ public class PlayerMovement : MonoBehaviour, IDamage
     {
         lifeSteal = 0;
         gamemanager.instance.updateLifeStealUI(lifeSteal, maxLifeSteal);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (attackPoint == null) return;
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(attackPoint.position, attackRange);
     }
 }
