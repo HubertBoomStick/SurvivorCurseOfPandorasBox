@@ -3682,18 +3682,20 @@ MonoBehaviour:
   maxHealth: 50
   player: {fileID: 0}
   animator: {fileID: 713093593251565887}
+  startDistance: 25
+  battleStartDelay: 1.5
+  battleStarted: 0
   followPlayer: 1
   moveSpeed: 3
   comboMoveSpeed: 2
   stopDistanceX: 1.5
   movingBoolName: Moving
   moveDirectionFloatName: MoveDirection
-  startDelay: 2
   cooldownBetweenAttacks: 3
   diveDistance: 8
   diveTime: 1
   emergeTime: 1
-  tentacleIndicatorPrefab: {fileID: 0}
+  tentacleIndicatorPrefab: {fileID: 1610359992024006565, guid: 1186cea2a6b8768438ea6e19aeab7832, type: 3}
   tentacleWarningTime: 1.5
   tentacleIndicatorYOffset: 1.5
   tentaclePillarPrefab: {fileID: 843185478384291108, guid: a863e09e3c0fad34eaef8b796d7de787, type: 3}
@@ -3714,12 +3716,14 @@ MonoBehaviour:
   waterfallUIIcon: {fileID: 0}
   uiCamera: {fileID: 0}
   safeRockPrefab: {fileID: 1488370557796484788, guid: 28fd7d2ee0d3fac4b837442f16826161, type: 3}
-  safeRockIndicatorPrefab: {fileID: 0}
+  safeRockIndicatorPrefab: {fileID: 4231849801799165700, guid: c04cd104a5073e94b9bfb68a68de12c5, type: 3}
   safeRockCount: 4
   safeRockYPosition: 8.5
   minimumSafeRockSpacing: 6
   sweepTriggerName: Sweep
   sweepAttackDuration: 3
+  deathTriggerName: Death
+  destroyAfterDeathDelay: 4
   showDebugLogs: 1
 --- !u!95 &713093593251565887
 Animator:
@@ -3730,7 +3734,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4704937332563489886}
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: f1f26a7131bf25444a8bcd5ceafa5a97, type: 3}
+  m_Avatar: {fileID: 9000000, guid: be87e1f3a5e9a514d879827f0fa56063, type: 3}
   m_Controller: {fileID: 9100000, guid: 1531fac39cc6c2c4391220ba14697e40, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0

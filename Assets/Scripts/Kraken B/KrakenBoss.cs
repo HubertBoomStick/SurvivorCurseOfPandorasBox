@@ -14,7 +14,6 @@ public class KrakenBoss : MonoBehaviour, IDamage
     [Header("Battle Start")]
     [SerializeField] private float startDistance = 25f;
     [SerializeField] private float battleStartDelay = 1.5f;
-    [SerializeField] private bool battleStarted;
 
     [Header("Movement")]
     [SerializeField] private bool followPlayer = true;
@@ -52,9 +51,9 @@ public class KrakenBoss : MonoBehaviour, IDamage
 
     [Header("Waterfall Attack")]
     [SerializeField] private GameObject waterfallPrefab;
+    [SerializeField] private Transform waterfallSpawnPoint;
     [SerializeField] private float waterfallWarningTime = 2f;
     [SerializeField] private float waterfallDuration = 6f;
-    [SerializeField] private float waterfallYPosition = 1f;
     [SerializeField] private float rockSpawnDelayBeforeWaterfall = 0.5f;
 
     [Header("UI Waterfall Warning")]
@@ -65,8 +64,9 @@ public class KrakenBoss : MonoBehaviour, IDamage
     [Header("Safe Rocks")]
     [SerializeField] private GameObject safeRockPrefab;
     [SerializeField] private GameObject safeRockIndicatorPrefab;
+    [SerializeField] private Transform safeRockStartPoint;
+    [SerializeField] private Transform safeRockEndPoint;
     [SerializeField] private int safeRockCount = 4;
-    [SerializeField] private float safeRockYPosition = 8.5f;
     [SerializeField] private float minimumSafeRockSpacing = 6f;
 
     [Header("3 Combo Sweep Attack")]
@@ -84,6 +84,7 @@ public class KrakenBoss : MonoBehaviour, IDamage
     private bool isDead;
     private bool isInvincible;
     private bool isBusy;
+    private bool battleStarted;
     private bool bossLoopStarted;
 
     private float normalY;
@@ -96,7 +97,6 @@ public class KrakenBoss : MonoBehaviour, IDamage
         if (player == null)
         {
             GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-
             if (playerObject != null)
                 player = playerObject.transform;
         }
@@ -230,9 +230,6 @@ public class KrakenBoss : MonoBehaviour, IDamage
         isInvincible = true;
         SetMoving(false);
 
-        if (showDebugLogs)
-            Debug.Log("Kraken starting tentacle eruption attack.");
-
         yield return StartCoroutine(DiveDown());
 
         for (int i = 0; i < eruptionCount; i++)
@@ -285,9 +282,6 @@ public class KrakenBoss : MonoBehaviour, IDamage
         isBusy = true;
         SetMoving(false);
 
-        if (showDebugLogs)
-            Debug.Log("Kraken starting waterfall attack.");
-
         Vector3 waterfallPosition = GetWaterfallPosition();
 
         ShowWaterfallUIIcon(waterfallPosition);
@@ -335,9 +329,6 @@ public class KrakenBoss : MonoBehaviour, IDamage
             }
         }
 
-        if (showDebugLogs)
-            Debug.Log("Safe rocks spawned BEFORE waterfall.");
-
         yield return new WaitForSeconds(rockSpawnDelayBeforeWaterfall);
 
         GameObject waterfall = null;
@@ -355,9 +346,6 @@ public class KrakenBoss : MonoBehaviour, IDamage
             if (waterfallAttack != null)
                 waterfallAttack.SetLifetime(waterfallDuration);
         }
-
-        if (showDebugLogs)
-            Debug.Log("Waterfall spawned AFTER safe rocks.");
 
         yield return new WaitForSeconds(waterfallDuration);
 
@@ -379,9 +367,6 @@ public class KrakenBoss : MonoBehaviour, IDamage
             yield break;
 
         isBusy = true;
-
-        if (showDebugLogs)
-            Debug.Log("SWEEP COMBO ATTACK TRIGGERED");
 
         if (animator != null)
         {
@@ -467,8 +452,11 @@ public class KrakenBoss : MonoBehaviour, IDamage
         List<Vector3> positions = new List<Vector3>();
         List<float> usedX = new List<float>();
 
-        float minX = GetMinX();
-        float maxX = GetMaxX();
+        if (safeRockStartPoint == null || safeRockEndPoint == null)
+            return positions;
+
+        float minX = Mathf.Min(safeRockStartPoint.position.x, safeRockEndPoint.position.x);
+        float maxX = Mathf.Max(safeRockStartPoint.position.x, safeRockEndPoint.position.x);
 
         for (int i = 0; i < safeRockCount; i++)
         {
@@ -497,8 +485,8 @@ public class KrakenBoss : MonoBehaviour, IDamage
 
             positions.Add(new Vector3(
                 chosenX,
-                safeRockYPosition,
-                eruptionStartPoint.position.z
+                safeRockStartPoint.position.y,
+                safeRockStartPoint.position.z
             ));
         }
 
@@ -507,12 +495,18 @@ public class KrakenBoss : MonoBehaviour, IDamage
 
     private Vector3 GetWaterfallPosition()
     {
+        if (waterfallSpawnPoint != null)
+            return waterfallSpawnPoint.position;
+
+        if (eruptionStartPoint == null || eruptionEndPoint == null)
+            return transform.position;
+
         float middleX = (GetMinX() + GetMaxX()) * 0.5f;
 
         return new Vector3(
             middleX,
-            waterfallYPosition,
-            eruptionStartPoint.position.z
+            transform.position.y,
+            transform.position.z
         );
     }
 
@@ -540,18 +534,8 @@ public class KrakenBoss : MonoBehaviour, IDamage
         if (uiCamera == null)
             uiCamera = Camera.main;
 
-        Vector3 screenPosition = uiCamera.WorldToScreenPoint(worldPosition);
-
         waterfallUIIcon.gameObject.SetActive(true);
-
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            uiCanvas.transform as RectTransform,
-            screenPosition,
-            uiCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : uiCanvas.worldCamera,
-            out Vector2 localPoint
-        );
-
-        waterfallUIIcon.anchoredPosition = localPoint;
+        waterfallUIIcon.anchoredPosition = Vector2.zero;
     }
 
     private void HideWaterfallUIIcon()
@@ -582,9 +566,6 @@ public class KrakenBoss : MonoBehaviour, IDamage
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
-        if (showDebugLogs)
-            Debug.Log("Kraken took damage: " + damage + " | HP left: " + currentHealth);
-
         if (currentHealth <= 0)
             Die();
     }
@@ -602,8 +583,6 @@ public class KrakenBoss : MonoBehaviour, IDamage
 
         if (animator != null)
             animator.SetTrigger(deathTriggerName);
-
-        Debug.Log("KRAKEN DEAD");
 
         Destroy(gameObject, destroyAfterDeathDelay);
     }
