@@ -383,7 +383,7 @@ MonoBehaviour:
   sideDistance: 25
   glideSpeed: 40
   attackHeightOffset: 0.5
-  returnHeight: 6
+  returnHeight: 50
   alternateSides: 1
   glideDamage: 1
   prepMoveSpeed: 4
