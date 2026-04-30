@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DragonBoss : MonoBehaviour, IDamage
 {
@@ -9,6 +10,11 @@ public class DragonBoss : MonoBehaviour, IDamage
     [Header("Health")]
     [SerializeField] private int maxHP = 50;
     [SerializeField] private int currentHP;
+
+    [Header("Health Bar")]
+    [SerializeField] private GameObject healthBarObject;
+    [SerializeField] private Image healthBarFill;
+    [SerializeField] private bool hideHealthBarAtStart = true;
 
     [Header("References")]
     [SerializeField] private Animator anim;
@@ -39,11 +45,15 @@ public class DragonBoss : MonoBehaviour, IDamage
     [SerializeField] private GameObject phaseTwoShockwaveObject;
 
     private bool isDead;
+    private bool hasBeenDefeated;
     private bool hasStartedFight;
     private bool phaseTwoStarted;
     private bool phaseTwoEntrancePlaying;
     private bool isInvulnerable;
     private float hitReactionTimer = Mathf.Infinity;
+
+    private Vector3 startPosition;
+    private Quaternion startRotation;
 
     public Animator Anim => anim;
     public Transform Player => player;
@@ -54,6 +64,9 @@ public class DragonBoss : MonoBehaviour, IDamage
 
     private void Awake()
     {
+        startPosition = transform.position;
+        startRotation = transform.rotation;
+
         if (anim == null)
             anim = GetComponent<Animator>();
 
@@ -64,6 +77,10 @@ public class DragonBoss : MonoBehaviour, IDamage
             phaseTwo = GetComponent<DragonPhaseTwo>();
 
         currentHP = maxHP;
+        UpdateHealthBar();
+
+        if (healthBarObject != null)
+            healthBarObject.SetActive(!hideHealthBarAtStart);
 
         if (phaseOne != null)
             phaseOne.SetBoss(this);
@@ -90,23 +107,16 @@ public class DragonBoss : MonoBehaviour, IDamage
 
     private void Update()
     {
-        if (isDead || player == null)
+        if (isDead || hasBeenDefeated || player == null)
             return;
 
         hitReactionTimer += Time.deltaTime;
 
-        if (startInPhaseTwo)
+        if (!hasStartedFight)
             return;
 
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-
-        if (!hasStartedFight && distanceToPlayer <= detectionRange)
-        {
-            hasStartedFight = true;
-
-            if (phaseOne != null)
-                phaseOne.BeginPhase();
-        }
+        if (startInPhaseTwo)
+            return;
 
         if (!phaseTwoStarted && currentHP <= maxHP * (phaseTwoThresholdPercent / 100f))
         {
@@ -114,15 +124,40 @@ public class DragonBoss : MonoBehaviour, IDamage
         }
     }
 
+    public void StartBossFight()
+    {
+        if (hasStartedFight || isDead || hasBeenDefeated)
+            return;
+
+        hasStartedFight = true;
+
+        if (healthBarObject != null)
+            healthBarObject.SetActive(true);
+
+        if (phaseOne != null)
+            phaseOne.BeginPhase();
+    }
+
+    public void ResetBossFight()
+    {
+        if (hasBeenDefeated)
+            return;
+
+        ResetBoss();
+    }
+
     public void StartPhaseTwoImmediately()
     {
-        if (phaseTwoStarted)
+        if (phaseTwoStarted || hasBeenDefeated)
             return;
 
         phaseTwoStarted = true;
         hasStartedFight = true;
         phaseTwoEntrancePlaying = false;
         isInvulnerable = false;
+
+        if (healthBarObject != null)
+            healthBarObject.SetActive(true);
 
         if (phaseOne != null)
         {
@@ -148,12 +183,13 @@ public class DragonBoss : MonoBehaviour, IDamage
             phaseTwo.BeginPhase();
         }
 
-        anim.Play("Ground Idle PhaseTwo");
+        if (anim != null)
+            anim.Play("Ground Idle PhaseTwo");
     }
 
     private void StartPhaseTwo()
     {
-        if (phaseTwoStarted || isDead || phaseTwoEntrancePlaying)
+        if (phaseTwoStarted || isDead || hasBeenDefeated || phaseTwoEntrancePlaying)
             return;
 
         phaseTwoStarted = true;
@@ -169,7 +205,6 @@ public class DragonBoss : MonoBehaviour, IDamage
         if (phaseTwo != null)
             phaseTwo.enabled = false;
 
-        // disable both while phase 2 intro is playing
         SetDamageHitboxState(useAirHitbox: false, useGroundHitbox: false);
 
         StartCoroutine(PhaseTwoEntranceRoutine());
@@ -224,12 +259,13 @@ public class DragonBoss : MonoBehaviour, IDamage
         if (phaseTwoShockwaveObject != null)
             phaseTwoShockwaveObject.SetActive(true);
 
-        anim.SetTrigger("PhaseTwo");
+        if (anim != null)
+            anim.SetTrigger("PhaseTwo");
     }
 
     public void FinishPhaseTwo()
     {
-        if (isDead)
+        if (isDead || hasBeenDefeated)
             return;
 
         if (phaseTwoLandPoint != null)
@@ -288,14 +324,19 @@ public class DragonBoss : MonoBehaviour, IDamage
 
     public void takeDamage(int amount)
     {
-        if (isDead || isInvulnerable)
+        if (isDead || isInvulnerable || hasBeenDefeated)
             return;
 
         currentHP -= amount;
+        currentHP = Mathf.Clamp(currentHP, 0, maxHP);
+
+        UpdateHealthBar();
+
+        if (healthBarObject != null)
+            healthBarObject.SetActive(true);
 
         if (currentHP <= 0)
         {
-            currentHP = 0;
             Die();
             return;
         }
@@ -304,7 +345,9 @@ public class DragonBoss : MonoBehaviour, IDamage
         {
             if (phaseOne != null && !phaseOne.IsBusy() && hitReactionTimer >= hitReactionCooldown)
             {
-                anim.SetTrigger("FlyHit");
+                if (anim != null)
+                    anim.SetTrigger("FlyHit");
+
                 hitReactionTimer = 0f;
             }
         }
@@ -312,15 +355,78 @@ public class DragonBoss : MonoBehaviour, IDamage
         {
             if (phaseTwo != null && !phaseTwo.IsBusy() && hitReactionTimer >= hitReactionCooldown)
             {
-                anim.SetTrigger("GroundHit");
+                if (anim != null)
+                    anim.SetTrigger("GroundHit");
+
                 hitReactionTimer = 0f;
             }
         }
     }
 
+    private void UpdateHealthBar()
+    {
+        if (healthBarFill != null)
+            healthBarFill.fillAmount = (float)currentHP / maxHP;
+    }
+
+    private void ResetBoss()
+    {
+        if (hasBeenDefeated)
+            return;
+
+        StopAllCoroutines();
+
+        isDead = false;
+        isInvulnerable = false;
+        hasStartedFight = false;
+        phaseTwoStarted = false;
+        phaseTwoEntrancePlaying = false;
+        hitReactionTimer = Mathf.Infinity;
+
+        currentHP = maxHP;
+        UpdateHealthBar();
+
+        if (healthBarObject != null)
+            healthBarObject.SetActive(false);
+
+        transform.position = startPosition;
+        transform.rotation = startRotation;
+
+        if (phaseOne != null)
+        {
+            phaseOne.StopPhase();
+            phaseOne.enabled = true;
+            phaseOne.SetBoss(this);
+        }
+
+        if (phaseTwo != null)
+        {
+            phaseTwo.StopPhase();
+            phaseTwo.enabled = false;
+            phaseTwo.SetBoss(this);
+        }
+
+        if (phaseTwoShockwaveObject != null)
+            phaseTwoShockwaveObject.SetActive(false);
+
+        SetDamageHitboxState(useAirHitbox: true, useGroundHitbox: false);
+
+        if (anim != null)
+        {
+            anim.Rebind();
+            anim.Update(0f);
+        }
+
+        Debug.Log("Dragon reset.");
+    }
+
     private void Die()
     {
+        if (isDead)
+            return;
+
         isDead = true;
+        hasBeenDefeated = true;
         isInvulnerable = true;
         phaseTwoEntrancePlaying = false;
 
@@ -337,7 +443,11 @@ public class DragonBoss : MonoBehaviour, IDamage
         if (phaseTwoShockwaveObject != null)
             phaseTwoShockwaveObject.SetActive(false);
 
-        anim.SetTrigger("Die");
+        if (healthBarObject != null)
+            healthBarObject.SetActive(false);
+
+        if (anim != null)
+            anim.SetTrigger("Die");
     }
 
     private void OnDrawGizmosSelected()

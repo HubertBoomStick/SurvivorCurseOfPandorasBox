@@ -1,19 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class KrakenBoss : MonoBehaviour, IDamage
 {
     [Header("Boss Health")]
     [SerializeField] private int maxHealth = 50;
+    [SerializeField] private Image healthBarFill;
+    [SerializeField] private GameObject healthBarObject;
+    [SerializeField] private bool hideHealthBarAtStart = true;
 
     [Header("References")]
     [SerializeField] private Transform player;
     [SerializeField] private Animator animator;
-
-    [Header("Battle Start")]
-    [SerializeField] private float startDistance = 25f;
-    [SerializeField] private float battleStartDelay = 1.5f;
 
     [Header("Movement")]
     [SerializeField] private bool followPlayer = true;
@@ -24,6 +24,7 @@ public class KrakenBoss : MonoBehaviour, IDamage
     [SerializeField] private string moveDirectionFloatName = "MoveDirection";
 
     [Header("Attack Timing")]
+    [SerializeField] private float battleStartDelay = 1.5f;
     [SerializeField] private float cooldownBetweenAttacks = 3f;
 
     [Header("Dive Settings")]
@@ -81,7 +82,9 @@ public class KrakenBoss : MonoBehaviour, IDamage
     [SerializeField] private bool showDebugLogs = true;
 
     private int currentHealth;
+
     private bool isDead;
+    private bool hasBeenDefeated;
     private bool isInvincible;
     private bool isBusy;
     private bool battleStarted;
@@ -90,13 +93,26 @@ public class KrakenBoss : MonoBehaviour, IDamage
     private float normalY;
     private float normalZ;
 
+    private Vector3 startPosition;
+    private Quaternion startRotation;
+
+    private readonly List<GameObject> spawnedFightObjects = new List<GameObject>();
+
     private void Start()
     {
+        startPosition = transform.position;
+        startRotation = transform.rotation;
+
         currentHealth = maxHealth;
+        UpdateHealthBar();
+
+        if (healthBarObject != null)
+            healthBarObject.SetActive(!hideHealthBarAtStart);
 
         if (player == null)
         {
             GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+
             if (playerObject != null)
                 player = playerObject.transform;
         }
@@ -118,28 +134,30 @@ public class KrakenBoss : MonoBehaviour, IDamage
 
     private void Update()
     {
-        if (isDead)
+        if (isDead || hasBeenDefeated)
             return;
 
         if (!battleStarted)
-        {
-            CheckBattleStart();
             return;
-        }
 
         if (!isBusy && followPlayer)
             MoveTowardPlayer(moveSpeed);
     }
 
-    private void CheckBattleStart()
+    public void StartBossFight()
     {
-        if (player == null)
+        if (battleStarted || isDead || hasBeenDefeated)
             return;
 
-        float distance = Vector3.Distance(transform.position, player.position);
+        StartCoroutine(StartBattleRoutine());
+    }
 
-        if (distance <= startDistance)
-            StartCoroutine(StartBattleRoutine());
+    public void ResetBossFight()
+    {
+        if (hasBeenDefeated)
+            return;
+
+        ResetBoss();
     }
 
     private IEnumerator StartBattleRoutine()
@@ -149,6 +167,9 @@ public class KrakenBoss : MonoBehaviour, IDamage
 
         battleStarted = true;
 
+        if (healthBarObject != null)
+            healthBarObject.SetActive(true);
+
         if (showDebugLogs)
             Debug.Log("KRAKEN BATTLE STARTED");
 
@@ -156,7 +177,7 @@ public class KrakenBoss : MonoBehaviour, IDamage
 
         yield return new WaitForSeconds(battleStartDelay);
 
-        if (!bossLoopStarted && !isDead)
+        if (!bossLoopStarted && !isDead && !hasBeenDefeated)
         {
             bossLoopStarted = true;
             StartCoroutine(BossLoop());
@@ -165,7 +186,7 @@ public class KrakenBoss : MonoBehaviour, IDamage
 
     private IEnumerator BossLoop()
     {
-        while (!isDead)
+        while (!isDead && !hasBeenDefeated)
         {
             yield return StartCoroutine(EruptionAttack());
             yield return new WaitForSeconds(cooldownBetweenAttacks);
@@ -247,6 +268,8 @@ public class KrakenBoss : MonoBehaviour, IDamage
                     indicatorPosition,
                     tentacleIndicatorPrefab.transform.rotation
                 );
+
+                spawnedFightObjects.Add(indicator);
             }
 
             yield return new WaitForSeconds(tentacleWarningTime);
@@ -256,11 +279,18 @@ public class KrakenBoss : MonoBehaviour, IDamage
 
             if (tentaclePillarPrefab != null)
             {
-                Instantiate(
+                GameObject tentacle = Instantiate(
                     tentaclePillarPrefab,
                     spawnPosition,
                     tentaclePillarPrefab.transform.rotation
                 );
+
+                spawnedFightObjects.Add(tentacle);
+
+                KrakenTentaclePillar tentacleScript = tentacle.GetComponentInChildren<KrakenTentaclePillar>();
+
+                if (tentacleScript != null)
+                    tentacleScript.SetKrakenBoss(this);
             }
 
             yield return new WaitForSeconds(eruptionDelayBetweenSpawns);
@@ -300,6 +330,7 @@ public class KrakenBoss : MonoBehaviour, IDamage
                 );
 
                 indicators.Add(indicator);
+                spawnedFightObjects.Add(indicator);
             }
         }
 
@@ -326,6 +357,7 @@ public class KrakenBoss : MonoBehaviour, IDamage
                 );
 
                 spawnedRocks.Add(rock);
+                spawnedFightObjects.Add(rock);
             }
         }
 
@@ -340,6 +372,8 @@ public class KrakenBoss : MonoBehaviour, IDamage
                 waterfallPosition,
                 waterfallPrefab.transform.rotation
             );
+
+            spawnedFightObjects.Add(waterfall);
 
             KrakenWaterfallAttack waterfallAttack = waterfall.GetComponent<KrakenWaterfallAttack>();
 
@@ -546,28 +580,86 @@ public class KrakenBoss : MonoBehaviour, IDamage
 
     public void TakeTentacleDamage()
     {
-        if (!isInvincible || isDead)
+        if (!isInvincible || isDead || hasBeenDefeated)
             return;
 
-        currentHealth -= 1;
+        TakeKrakenDamage(1);
+        Debug.Log("Kraken took 1 damage from destroyed tentacle.");
+    }
+
+    public void takeDamage(int damage)
+    {
+        if (isDead || isInvincible || hasBeenDefeated)
+            return;
+
+        TakeKrakenDamage(damage);
+    }
+
+    private void TakeKrakenDamage(int damageAmount)
+    {
+        currentHealth -= damageAmount;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
-        Debug.Log("Kraken took 1 damage from destroyed tentacle. HP left: " + currentHealth);
+        UpdateHealthBar();
+
+        if (healthBarObject != null)
+            healthBarObject.SetActive(true);
+
+        Debug.Log("Kraken HP left: " + currentHealth + "/" + maxHealth);
 
         if (currentHealth <= 0)
             Die();
     }
 
-    public void takeDamage(int damage)
+    private void UpdateHealthBar()
     {
-        if (isDead || isInvincible)
+        if (healthBarFill != null)
+            healthBarFill.fillAmount = (float)currentHealth / maxHealth;
+    }
+
+    private void ResetBoss()
+    {
+        if (hasBeenDefeated)
             return;
 
-        currentHealth -= damage;
-        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        StopAllCoroutines();
 
-        if (currentHealth <= 0)
-            Die();
+        foreach (GameObject obj in spawnedFightObjects)
+        {
+            if (obj != null)
+                Destroy(obj);
+        }
+
+        spawnedFightObjects.Clear();
+
+        currentHealth = maxHealth;
+        UpdateHealthBar();
+
+        if (healthBarObject != null)
+            healthBarObject.SetActive(false);
+
+        isDead = false;
+        isInvincible = false;
+        isBusy = false;
+        battleStarted = false;
+        bossLoopStarted = false;
+
+        transform.position = startPosition;
+        transform.rotation = startRotation;
+
+        normalY = startPosition.y;
+        normalZ = startPosition.z;
+
+        SetMoving(false);
+        HideWaterfallUIIcon();
+
+        if (animator != null)
+        {
+            animator.Rebind();
+            animator.Update(0f);
+        }
+
+        Debug.Log("Kraken reset.");
     }
 
     private void Die()
@@ -576,10 +668,23 @@ public class KrakenBoss : MonoBehaviour, IDamage
             return;
 
         isDead = true;
+        hasBeenDefeated = true;
+
         StopAllCoroutines();
+
+        foreach (GameObject obj in spawnedFightObjects)
+        {
+            if (obj != null)
+                Destroy(obj);
+        }
+
+        spawnedFightObjects.Clear();
 
         SetMoving(false);
         HideWaterfallUIIcon();
+
+        if (healthBarObject != null)
+            healthBarObject.SetActive(false);
 
         if (animator != null)
             animator.SetTrigger(deathTriggerName);

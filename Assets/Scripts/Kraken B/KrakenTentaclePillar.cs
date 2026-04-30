@@ -1,10 +1,16 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class KrakenTentaclePillar : MonoBehaviour, IDamage
 {
     [Header("Health")]
     [SerializeField] private int maxHealth = 5;
+    [SerializeField] private Image healthBarFill;
+    [SerializeField] private GameObject healthBarObject;
+
+    [Header("Kraken Damage")]
+    [SerializeField] private KrakenBoss krakenBoss;
 
     [Header("Lifetime")]
     [SerializeField] private float lifeTime = 5f;
@@ -47,8 +53,18 @@ public class KrakenTentaclePillar : MonoBehaviour, IDamage
     private void Start()
     {
         currentHealth = maxHealth;
+        UpdateHealthBar();
+
+        if (healthBarObject != null)
+            healthBarObject.SetActive(true);
+
         StartCoroutine(SpawnRoutine());
         StartCoroutine(LifetimeRoutine());
+    }
+
+    public void SetKrakenBoss(KrakenBoss boss)
+    {
+        krakenBoss = boss;
     }
 
     private IEnumerator SpawnRoutine()
@@ -84,6 +100,9 @@ public class KrakenTentaclePillar : MonoBehaviour, IDamage
             return;
 
         currentHealth -= damageAmount;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+
+        UpdateHealthBar();
 
         Debug.Log("Tentacle took damage: " + damageAmount + " | HP left: " + currentHealth);
 
@@ -91,6 +110,12 @@ public class KrakenTentaclePillar : MonoBehaviour, IDamage
 
         if (currentHealth <= 0)
             StartCoroutine(DeathRoutine(true));
+    }
+
+    private void UpdateHealthBar()
+    {
+        if (healthBarFill != null)
+            healthBarFill.fillAmount = (float)currentHealth / maxHealth;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -153,15 +178,14 @@ public class KrakenTentaclePillar : MonoBehaviour, IDamage
 
         isDead = true;
 
-        if (killedByPlayer)
-        {
-            KrakenBoss kraken = FindFirstObjectByType<KrakenBoss>();
-            if (kraken != null)
-                kraken.TakeTentacleDamage();
-        }
+        if (killedByPlayer && krakenBoss != null)
+            krakenBoss.TakeTentacleDamage();
 
         foreach (Collider col in GetComponentsInChildren<Collider>())
             col.enabled = false;
+
+        if (healthBarObject != null)
+            healthBarObject.SetActive(false);
 
         Vector3 start = sinkRoot.position;
         Vector3 end = start + Vector3.down * sinkDistance;

@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -162.75, y: 14.25, z: -7.25}
-  m_LocalScale: {x: 68.44187, y: 1, z: 1}
+  m_LocalScale: {x: 32.38028, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5248366995567475258}
@@ -98,7 +98,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::KrakenWaterfallAttack
   lifetime: 6
   damagePerTick: 1
-  tickRate: 0.5
+  tickRate: 0.75
   safeRockLayer:
     serializedVersion: 2
     m_Bits: 1024
