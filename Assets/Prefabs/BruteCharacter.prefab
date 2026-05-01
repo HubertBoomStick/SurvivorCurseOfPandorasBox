@@ -1648,10 +1648,15 @@ MonoBehaviour:
   sprintKey: 304
   crouchKey: 306
   crouchSpeedMultiplier: 0.5
-  crouchScale: {x: 1, y: 0.5, z: 1}
+  standingCapsuleHeight: 2.2
+  standingCapsuleCenter: {x: 0, y: 1.1, z: 0}
+  crouchCapsuleHeight: 1
+  crouchCapsuleCenter: {x: 0, y: 0.5, z: 0}
+  slideCapsuleHeight: 1
+  slideCapsuleCenter: {x: 0, y: 0.5, z: 0}
   slideSpeed: 12
-  slideDuration: 3
-  maxJumps: 2
+  slideDuration: 2
+  maxJumps: 1
   wallCheckDistance: 0.5
   wallLayer:
     serializedVersion: 2
@@ -1666,11 +1671,23 @@ MonoBehaviour:
   knockbackDuration: 0.2
   attackCooldown: 0.3
   attackDamage: 1
+  runAttackDamage: 3
   attackRange: 1
   attackPoint: {fileID: 3704481423677466072}
   enemyLayer:
     serializedVersion: 2
     m_Bits: 256
+  playerRenderers:
+  - {fileID: 7361719779068861303}
+  - {fileID: 8379824660546530495}
+  - {fileID: 8162902517450301994}
+  - {fileID: 3979460357394272605}
+  - {fileID: 8258044997443989645}
+  - {fileID: 6274446920934302462}
+  - {fileID: 8324426549095263826}
+  - {fileID: 4554224856276012014}
+  healFlashColor: {r: 0, g: 1, b: 0, a: 1}
+  healFlashDuration: 0.25
   animator: {fileID: 2936441189576890603}
 --- !u!95 &2936441189576890603
 Animator:
