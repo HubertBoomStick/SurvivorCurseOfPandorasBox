@@ -1157,6 +1157,10 @@ PrefabInstance:
       propertyPath: waterfallSpawnPoint
       value: 
       objectReference: {fileID: 221536848}
+    - target: {fileID: 2210075512728965443, guid: 507aee8b219a2b440a08e23356a46b30, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -16.8
+      objectReference: {fileID: 0}
     - target: {fileID: 4286977009662231397, guid: 507aee8b219a2b440a08e23356a46b30, type: 3}
       propertyPath: m_SizeDelta.x
       value: 98

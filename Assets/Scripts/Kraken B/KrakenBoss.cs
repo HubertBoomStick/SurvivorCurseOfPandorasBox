@@ -583,8 +583,8 @@ public class KrakenBoss : MonoBehaviour, IDamage
         if (!isInvincible || isDead || hasBeenDefeated)
             return;
 
-        TakeKrakenDamage(1);
-        Debug.Log("Kraken took 1 damage from destroyed tentacle.");
+        TakeKrakenDamage(2);
+        Debug.Log("Kraken took 2 damage from destroyed tentacle.");
     }
 
     public void takeDamage(int damage)

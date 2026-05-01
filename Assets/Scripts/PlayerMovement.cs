@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour, IDamage
@@ -9,6 +10,7 @@ public class PlayerMovement : MonoBehaviour, IDamage
     [SerializeField] private int lifeSteal = 0;
     [SerializeField] private int maxLifeSteal = 10;
     [SerializeField] private int lifeStealPerHit = 1;
+    [SerializeField] private int runAttackLifeStealGain = 5;
 
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 5f;
@@ -23,14 +25,21 @@ public class PlayerMovement : MonoBehaviour, IDamage
     [SerializeField] private float jumpCD = 0.1f;
     [SerializeField] private float fallMultiplier = 2f;
 
-    [Header("Sprint")]
+    [Header("Sprint / Run")]
     [SerializeField] private float sprintMultiplier = 1.5f;
     [SerializeField] private KeyCode sprintKey = KeyCode.LeftShift;
 
     [Header("Crouch")]
     [SerializeField] private KeyCode crouchKey = KeyCode.LeftControl;
     [SerializeField] private float crouchSpeedMultiplier = 0.5f;
-    [SerializeField] private Vector3 crouchScale = new Vector3(1, 0.5f, 1);
+
+    [Header("Capsule Settings")]
+    [SerializeField] private float standingCapsuleHeight = 2.2f;
+    [SerializeField] private Vector3 standingCapsuleCenter = new Vector3(0f, 1.1f, 0f);
+    [SerializeField] private float crouchCapsuleHeight = 1.4f;
+    [SerializeField] private Vector3 crouchCapsuleCenter = new Vector3(0f, 0.7f, 0f);
+    [SerializeField] private float slideCapsuleHeight = 1.0f;
+    [SerializeField] private Vector3 slideCapsuleCenter = new Vector3(0f, 0.5f, 0f);
 
     [Header("Slide")]
     [SerializeField] private float slideSpeed = 12f;
@@ -62,46 +71,81 @@ public class PlayerMovement : MonoBehaviour, IDamage
     [Header("Attack")]
     [SerializeField] private float attackCooldown = 0.3f;
     [SerializeField] private int attackDamage = 1;
+    [SerializeField] private int runAttackDamage = 3;
     [SerializeField] private float attackRange = 1f;
     [SerializeField] private Transform attackPoint;
     [SerializeField] private LayerMask enemyLayer;
+
+    [Header("Flash")]
+    [SerializeField] private Renderer[] playerRenderers;
+    [SerializeField] private Color healFlashColor = Color.green;
+    [SerializeField] private float healFlashDuration = 0.25f;
+    [SerializeField] private Color damageFlashColor = Color.red;
+    [SerializeField] private float damageFlashDuration = 0.15f;
 
     [Header("Animation")]
     [SerializeField] private Animator animator;
 
     private Rigidbody rb;
-    private Vector3 originalScale;
+    private CapsuleCollider capsule;
 
     private int jumpsLeft;
 
-    private bool isWallSliding;
     private bool isGrounded;
+    private bool wasGroundedLastFrame;
     private bool isTouchingWall;
-    private bool isSprinting;
+    private bool wasTouchingWall;
+    private bool isWallSliding;
     private bool isCrouching;
     private bool isSliding;
     private bool isKnockedBack;
     private bool isDashing;
     private bool isFloating;
-    private bool wasTouchingWall;
 
+    private float moveInput;
     private float attackTimer;
     private float knockbackTimer;
     private float dashTimer;
     private float dashCooldownTimer;
     private float slideTimer;
     private float jumpTimer;
-    private float moveInput;
+
+    private enum AttackType
+    {
+        None,
+        Horizontal,
+        Up,
+        Down,
+        Run
+    }
+
+    private AttackType currentAttackType = AttackType.None;
+    private bool attackHasHit;
+
+    private Color[][] originalRendererColors;
+    private Coroutine flashRoutine;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        capsule = GetComponent<CapsuleCollider>();
 
         if (animator == null)
             animator = GetComponentInChildren<Animator>();
 
         if (animator != null)
             animator.applyRootMotion = false;
+
+        if (playerRenderers == null || playerRenderers.Length == 0)
+            playerRenderers = GetComponentsInChildren<Renderer>();
+
+        SaveOriginalRendererColors();
+
+        if (capsule != null)
+        {
+            standingCapsuleHeight = capsule.height;
+            standingCapsuleCenter = capsule.center;
+        }
     }
 
     private void Start()
@@ -109,7 +153,6 @@ public class PlayerMovement : MonoBehaviour, IDamage
         HPOrig = HP;
         updatePlayerUI();
 
-        originalScale = transform.localScale;
         jumpsLeft = maxJumps;
 
         gamemanager.instance.updateLifeStealUI(lifeSteal, maxLifeSteal);
@@ -129,12 +172,9 @@ public class PlayerMovement : MonoBehaviour, IDamage
 
         CheckGround();
         CheckWall();
-        UpdateAnimations();
 
         if (!isKnockedBack)
         {
-            isSprinting = Input.GetKey(sprintKey) && isGrounded && !isCrouching && !isSliding;
-
             if (Input.GetKeyDown(KeyCode.Space) && !isSliding)
             {
                 if (isTouchingWall && !isGrounded)
@@ -143,32 +183,25 @@ public class PlayerMovement : MonoBehaviour, IDamage
                 }
                 else if (jumpsLeft > 0)
                 {
-                    Jump();
+                    bool isDoubleJump = !isGrounded;
+                    Jump(isDoubleJump);
                     jumpsLeft--;
                 }
-
-                if (!isGrounded && jumpsLeft == 0 && Input.GetKey(KeyCode.Space) && rb.linearVelocity.y < 0)
-                    isFloating = true;
-                else
-                    isFloating = false;
             }
+
+            isFloating = !isGrounded && jumpsLeft == 0 && Input.GetKey(KeyCode.Space) && rb.linearVelocity.y < 0;
 
             if (Input.GetKeyDown(KeyCode.E) && lifeSteal >= maxLifeSteal)
-            {
-                HealFull();
-            }
+                HealInstant();
 
             if (attackTimer > 0)
                 attackTimer -= Time.deltaTime;
 
             if (Input.GetMouseButtonDown(0) && attackTimer <= 0 && !isSliding)
             {
-                bool holdingW = Input.GetKey(KeyCode.W);
-                bool holdingS = Input.GetKey(KeyCode.S);
-
-                if (holdingW)
+                if (Input.GetKey(KeyCode.W))
                     AttackUp();
-                else if (holdingS)
+                else if (Input.GetKey(KeyCode.S))
                     AttackDown();
                 else
                     Attack();
@@ -190,9 +223,7 @@ public class PlayerMovement : MonoBehaviour, IDamage
                 StopCrouch();
 
             if (Input.GetKeyDown(dashKey) && dashCooldownTimer <= 0 && !isSliding)
-            {
                 StartDash();
-            }
 
             if (dashCooldownTimer > 0)
                 dashCooldownTimer -= Time.deltaTime;
@@ -213,6 +244,8 @@ public class PlayerMovement : MonoBehaviour, IDamage
             if (slideTimer <= 0f)
                 StopSlide();
         }
+
+        UpdateAnimations();
     }
 
     private void FixedUpdate()
@@ -221,13 +254,7 @@ public class PlayerMovement : MonoBehaviour, IDamage
             Move();
 
         if (isWallSliding && rb.linearVelocity.y < -wallSlideSpeed)
-        {
-            rb.linearVelocity = new Vector3(
-                rb.linearVelocity.x,
-                -wallSlideSpeed,
-                rb.linearVelocity.z
-            );
-        }
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, -wallSlideSpeed, rb.linearVelocity.z);
 
         if (rb.linearVelocity.y < 0)
         {
@@ -256,7 +283,9 @@ public class PlayerMovement : MonoBehaviour, IDamage
         }
         else
         {
-            if (isSprinting)
+            bool running = Input.GetKey(sprintKey) && Mathf.Abs(moveInput) > 0.1f && !isCrouching;
+
+            if (running)
                 currentSpeed *= sprintMultiplier;
 
             if (isCrouching)
@@ -276,16 +305,23 @@ public class PlayerMovement : MonoBehaviour, IDamage
             transform.rotation = Quaternion.Euler(0f, -90f, 0f);
     }
 
-    private void Jump()
+    private void Jump(bool isDoubleJump)
+    {
+        isGrounded = false;
+        wasGroundedLastFrame = false;
+        jumpTimer = 0f;
+
+        if (isDoubleJump)
+            TriggerAnim("DoubleJump");
+        else
+            TriggerAnim("Jump");
+    }
+
+    public void JumpForceEvent()
     {
         Vector3 velocity = rb.linearVelocity;
         velocity.y = jumpForce;
         rb.linearVelocity = velocity;
-
-        isGrounded = false;
-        jumpTimer = 0f;
-
-        TriggerAnim("Jump");
     }
 
     private void CheckGround()
@@ -293,16 +329,21 @@ public class PlayerMovement : MonoBehaviour, IDamage
         if (jumpTimer < jumpCD)
         {
             jumpTimer += Time.deltaTime;
+            isGrounded = false;
+            wasGroundedLastFrame = false;
             return;
         }
 
-        isGrounded = Physics.CheckSphere(feetPosition.position, groundCheckRadius, groundLayer);
+        bool groundedNow = Physics.CheckSphere(feetPosition.position, groundCheckRadius, groundLayer);
 
-        if (isGrounded)
+        if (groundedNow && !wasGroundedLastFrame)
         {
             jumpsLeft = maxJumps;
             isFloating = false;
         }
+
+        isGrounded = groundedNow;
+        wasGroundedLastFrame = groundedNow;
     }
 
     private void CheckWall()
@@ -341,30 +382,57 @@ public class PlayerMovement : MonoBehaviour, IDamage
     private void StartCrouch()
     {
         isCrouching = true;
-        transform.localScale = crouchScale;
+        SetCapsuleCrouch();
     }
 
     private void StopCrouch()
     {
         isCrouching = false;
-        transform.localScale = originalScale;
+        SetCapsuleStanding();
     }
 
     private void StartSlide()
     {
         isSliding = true;
+        isCrouching = false;
         slideTimer = slideDuration;
 
-        StartCrouch();
+        SetCapsuleSlide();
         TriggerAnim("Slide");
     }
 
     private void StopSlide()
     {
         isSliding = false;
-        StopCrouch();
+        isCrouching = false;
+
+        SetCapsuleStanding();
 
         rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, rb.linearVelocity.z);
+    }
+
+    private void SetCapsuleCrouch()
+    {
+        if (capsule == null) return;
+
+        capsule.height = crouchCapsuleHeight;
+        capsule.center = crouchCapsuleCenter;
+    }
+
+    private void SetCapsuleSlide()
+    {
+        if (capsule == null) return;
+
+        capsule.height = slideCapsuleHeight;
+        capsule.center = slideCapsuleCenter;
+    }
+
+    private void SetCapsuleStanding()
+    {
+        if (capsule == null) return;
+
+        capsule.height = standingCapsuleHeight;
+        capsule.center = standingCapsuleCenter;
     }
 
     private void StartDash()
@@ -391,13 +459,19 @@ public class PlayerMovement : MonoBehaviour, IDamage
     {
         if (animator == null) return;
 
-        bool running = Mathf.Abs(rb.linearVelocity.x) > 0.1f && isGrounded && !isSliding && !isCrouching;
+        bool hasMoveInput = Mathf.Abs(Input.GetAxisRaw("Horizontal")) > 0.1f;
+        bool canMoveAnimate = isGrounded && !isSliding && !isCrouching;
+
+        bool running = hasMoveInput && Input.GetKey(sprintKey) && canMoveAnimate;
+        bool walking = hasMoveInput && !Input.GetKey(sprintKey) && canMoveAnimate;
+
         bool falling = !isGrounded && rb.linearVelocity.y < -0.1f;
         bool hanging = isWallSliding;
         bool crouching = isCrouching && !isSliding;
-        bool crouchWalking = isCrouching && Mathf.Abs(rb.linearVelocity.x) > 0.1f && isGrounded && !isSliding;
+        bool crouchWalking = isCrouching && hasMoveInput && isGrounded && !isSliding;
         bool sliding = isSliding;
 
+        animator.SetBool("IsWalk", walking);
         animator.SetBool("IsRun", running);
         animator.SetBool("IsFalling", falling);
         animator.SetBool("IsWallHang", hanging);
@@ -412,65 +486,110 @@ public class PlayerMovement : MonoBehaviour, IDamage
         if (animator == null) return;
 
         animator.ResetTrigger("Jump");
+        animator.ResetTrigger("DoubleJump");
         animator.ResetTrigger("Slide");
         animator.ResetTrigger("Attack");
         animator.ResetTrigger("AttackUp");
         animator.ResetTrigger("AttackDown");
         animator.ResetTrigger("RunAttack");
-        animator.ResetTrigger("Heal");
 
         animator.SetTrigger(triggerName);
     }
 
     private void Attack()
     {
-        bool runningAttack = Mathf.Abs(rb.linearVelocity.x) > 0.1f && isGrounded && !isCrouching && !isSliding;
+        bool runningAttack =
+            Mathf.Abs(moveInput) > 0.1f &&
+            Input.GetKey(sprintKey) &&
+            isGrounded &&
+            !isCrouching &&
+            !isSliding;
+
+        attackHasHit = false;
 
         if (runningAttack)
+        {
+            currentAttackType = AttackType.Run;
             TriggerAnim("RunAttack");
+        }
         else
+        {
+            currentAttackType = AttackType.Horizontal;
             TriggerAnim("Attack");
-
-        Collider[] hits = Physics.OverlapSphere(
-            attackPoint.position,
-            attackRange,
-            enemyLayer
-        );
-
-        DealDamage(hits);
+        }
     }
 
     private void AttackUp()
     {
+        currentAttackType = AttackType.Up;
+        attackHasHit = false;
+
         TriggerAnim("AttackUp");
-
-        Vector3 attackPos = attackPoint.position + Vector3.up * attackRange;
-
-        Collider[] hits = Physics.OverlapSphere(
-            attackPos,
-            attackRange,
-            enemyLayer
-        );
-
-        DealDamage(hits);
     }
 
     private void AttackDown()
     {
+        currentAttackType = AttackType.Down;
+        attackHasHit = false;
+
         TriggerAnim("AttackDown");
-
-        Vector3 attackPos = attackPoint.position + Vector3.down * attackRange;
-
-        Collider[] hits = Physics.OverlapSphere(
-            attackPos,
-            attackRange,
-            enemyLayer
-        );
-
-        DealDamage(hits);
     }
 
-    private void DealDamage(Collider[] hits)
+    public void HorizontalAttackHitEvent()
+    {
+        if (currentAttackType != AttackType.Horizontal) return;
+        if (attackHasHit) return;
+
+        attackHasHit = true;
+
+        Collider[] hits = Physics.OverlapSphere(attackPoint.position, attackRange, enemyLayer);
+        DealDamageAmount(hits, attackDamage);
+    }
+
+    public void RunAttackHitEvent()
+    {
+        if (currentAttackType != AttackType.Run) return;
+        if (attackHasHit) return;
+
+        attackHasHit = true;
+
+        Collider[] hits = Physics.OverlapSphere(attackPoint.position, attackRange, enemyLayer);
+        DealDamageAmount(hits, runAttackDamage, runAttackLifeStealGain);
+    }
+
+    public void UpAttackHitEvent()
+    {
+        if (currentAttackType != AttackType.Up) return;
+        if (attackHasHit) return;
+
+        attackHasHit = true;
+
+        Vector3 attackPos = attackPoint.position + Vector3.up * attackRange;
+        Collider[] hits = Physics.OverlapSphere(attackPos, attackRange, enemyLayer);
+
+        DealDamageAmount(hits, attackDamage);
+    }
+
+    public void DownAttackHitEvent()
+    {
+        if (currentAttackType != AttackType.Down) return;
+        if (attackHasHit) return;
+
+        attackHasHit = true;
+
+        Vector3 attackPos = attackPoint.position + Vector3.down * attackRange;
+        Collider[] hits = Physics.OverlapSphere(attackPos, attackRange, enemyLayer);
+
+        DealDamageAmount(hits, attackDamage);
+    }
+
+    public void EndAttackEvent()
+    {
+        currentAttackType = AttackType.None;
+        attackHasHit = false;
+    }
+
+    private void DealDamageAmount(Collider[] hits, int damageAmount, int lifeStealGain = -1)
     {
         bool hitSomething = false;
 
@@ -486,13 +605,18 @@ public class PlayerMovement : MonoBehaviour, IDamage
 
             if (damageable != null)
             {
-                damageable.takeDamage(attackDamage);
+                damageable.takeDamage(damageAmount);
                 hitSomething = true;
             }
         }
 
         if (hitSomething)
-            AddLifeSteal(lifeStealPerHit);
+        {
+            if (lifeStealGain < 0)
+                lifeStealGain = lifeStealPerHit;
+
+            AddLifeSteal(lifeStealGain);
+        }
     }
 
     private void AddLifeSteal(int amount)
@@ -505,7 +629,7 @@ public class PlayerMovement : MonoBehaviour, IDamage
         gamemanager.instance.updateLifeStealUI(lifeSteal, maxLifeSteal);
     }
 
-    private void HealFull()
+    private void HealInstant()
     {
         HP = HPOrig;
         updatePlayerUI();
@@ -513,7 +637,94 @@ public class PlayerMovement : MonoBehaviour, IDamage
         lifeSteal = 0;
         gamemanager.instance.updateLifeStealUI(lifeSteal, maxLifeSteal);
 
-        TriggerAnim("Heal");
+        FlashColor(healFlashColor, healFlashDuration);
+    }
+
+    public void takeDamage(int amount)
+    {
+        HP -= amount;
+        updatePlayerUI();
+
+        FlashColor(damageFlashColor, damageFlashDuration);
+
+        if (HP <= 0)
+            gamemanager.instance.youLose();
+    }
+
+    private void FlashColor(Color color, float duration)
+    {
+        if (flashRoutine != null)
+            StopCoroutine(flashRoutine);
+
+        flashRoutine = StartCoroutine(FlashRoutine(color, duration));
+    }
+
+    private IEnumerator FlashRoutine(Color color, float duration)
+    {
+        SetRendererColor(color);
+
+        yield return new WaitForSeconds(duration);
+
+        RestoreOriginalRendererColors();
+
+        flashRoutine = null;
+    }
+
+    private void SaveOriginalRendererColors()
+    {
+        if (playerRenderers == null) return;
+
+        originalRendererColors = new Color[playerRenderers.Length][];
+
+        for (int i = 0; i < playerRenderers.Length; i++)
+        {
+            if (playerRenderers[i] == null)
+                continue;
+
+            Material[] materials = playerRenderers[i].materials;
+            originalRendererColors[i] = new Color[materials.Length];
+
+            for (int j = 0; j < materials.Length; j++)
+            {
+                if (materials[j].HasProperty("_Color"))
+                    originalRendererColors[i][j] = materials[j].color;
+            }
+        }
+    }
+
+    private void SetRendererColor(Color color)
+    {
+        if (playerRenderers == null) return;
+
+        foreach (Renderer rend in playerRenderers)
+        {
+            if (rend == null) continue;
+
+            foreach (Material mat in rend.materials)
+            {
+                if (mat.HasProperty("_Color"))
+                    mat.color = color;
+            }
+        }
+    }
+
+    private void RestoreOriginalRendererColors()
+    {
+        if (playerRenderers == null || originalRendererColors == null) return;
+
+        for (int i = 0; i < playerRenderers.Length; i++)
+        {
+            if (playerRenderers[i] == null)
+                continue;
+
+            Material[] materials = playerRenderers[i].materials;
+
+            for (int j = 0; j < materials.Length; j++)
+            {
+                if (materials[j].HasProperty("_Color") && originalRendererColors[i] != null && j < originalRendererColors[i].Length)
+                    materials[j].color = originalRendererColors[i][j];
+            }
+        }
     }
 
     public void ApplyKnockback(Vector3 force)
@@ -523,15 +734,6 @@ public class PlayerMovement : MonoBehaviour, IDamage
 
         rb.linearVelocity = Vector3.zero;
         rb.AddForce(force, ForceMode.Impulse);
-    }
-
-    public void takeDamage(int amount)
-    {
-        HP -= amount;
-        updatePlayerUI();
-
-        if (HP <= 0)
-            gamemanager.instance.youLose();
     }
 
     public void updatePlayerUI()
@@ -557,5 +759,11 @@ public class PlayerMovement : MonoBehaviour, IDamage
 
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(attackPoint.position, attackRange);
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(attackPoint.position + Vector3.up * attackRange, attackRange);
+
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(attackPoint.position + Vector3.down * attackRange, attackRange);
     }
 }

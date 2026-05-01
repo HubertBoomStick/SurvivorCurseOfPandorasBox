@@ -1962,7 +1962,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0592b06762bd0a245b9935aaddd33344, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KrakenTentaclePillar
-  maxHealth: 5
+  maxHealth: 3
   healthBarFill: {fileID: 7645048343751083937}
   healthBarObject: {fileID: 8119294385508756383}
   krakenBoss: {fileID: 0}
