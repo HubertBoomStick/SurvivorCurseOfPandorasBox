@@ -76,10 +76,12 @@ public class PlayerMovement : MonoBehaviour, IDamage
     [SerializeField] private Transform attackPoint;
     [SerializeField] private LayerMask enemyLayer;
 
-    [Header("Heal Flash")]
+    [Header("Flash")]
     [SerializeField] private Renderer[] playerRenderers;
     [SerializeField] private Color healFlashColor = Color.green;
     [SerializeField] private float healFlashDuration = 0.25f;
+    [SerializeField] private Color damageFlashColor = Color.red;
+    [SerializeField] private float damageFlashDuration = 0.15f;
 
     [Header("Animation")]
     [SerializeField] private Animator animator;
@@ -121,7 +123,7 @@ public class PlayerMovement : MonoBehaviour, IDamage
     private bool attackHasHit;
 
     private Color[][] originalRendererColors;
-    private Coroutine healFlashRoutine;
+    private Coroutine flashRoutine;
 
     private void Awake()
     {
@@ -635,26 +637,37 @@ public class PlayerMovement : MonoBehaviour, IDamage
         lifeSteal = 0;
         gamemanager.instance.updateLifeStealUI(lifeSteal, maxLifeSteal);
 
-        FlashGreen();
+        FlashColor(healFlashColor, healFlashDuration);
     }
 
-    private void FlashGreen()
+    public void takeDamage(int amount)
     {
-        if (healFlashRoutine != null)
-            StopCoroutine(healFlashRoutine);
+        HP -= amount;
+        updatePlayerUI();
 
-        healFlashRoutine = StartCoroutine(HealFlashRoutine());
+        FlashColor(damageFlashColor, damageFlashDuration);
+
+        if (HP <= 0)
+            gamemanager.instance.youLose();
     }
 
-    private IEnumerator HealFlashRoutine()
+    private void FlashColor(Color color, float duration)
     {
-        SetRendererColor(healFlashColor);
+        if (flashRoutine != null)
+            StopCoroutine(flashRoutine);
 
-        yield return new WaitForSeconds(healFlashDuration);
+        flashRoutine = StartCoroutine(FlashRoutine(color, duration));
+    }
+
+    private IEnumerator FlashRoutine(Color color, float duration)
+    {
+        SetRendererColor(color);
+
+        yield return new WaitForSeconds(duration);
 
         RestoreOriginalRendererColors();
 
-        healFlashRoutine = null;
+        flashRoutine = null;
     }
 
     private void SaveOriginalRendererColors()
@@ -721,15 +734,6 @@ public class PlayerMovement : MonoBehaviour, IDamage
 
         rb.linearVelocity = Vector3.zero;
         rb.AddForce(force, ForceMode.Impulse);
-    }
-
-    public void takeDamage(int amount)
-    {
-        HP -= amount;
-        updatePlayerUI();
-
-        if (HP <= 0)
-            gamemanager.instance.youLose();
     }
 
     public void updatePlayerUI()
